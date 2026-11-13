@@ -1,6 +1,8 @@
 """Community and game layer. Plain counting over order history, no AI."""
 from collections import Counter
 
+from . import events
+
 XP_PER_ITEM = 10
 XP_PER_ORDER = 50
 XP_PER_ORDER_LED = 100
@@ -30,7 +32,7 @@ def streak_weeks(weeks: set[int], current_week: int) -> int:
     return streak
 
 
-def member_stats(member_id: str, history: list[dict], current_week: int) -> dict:
+def member_stats(member_id: str, history: list[dict], current_week: int, bonus_xp: int = 0) -> dict:
     lines = [h for h in history if h["memberId"] == member_id]
     orders = {(h["week"], h["podId"]) for h in lines}
     led = {(h["week"], h["podId"]) for h in history if h.get("leaderId") == member_id}
@@ -46,7 +48,7 @@ def member_stats(member_id: str, history: list[dict], current_week: int) -> dict
         "shipping_saved": SHIPPING_SAVED_PER_ORDER * len(orders),
         "by_category": by_category,
     }
-    xp = XP_PER_ITEM * items + XP_PER_ORDER * len(orders) + XP_PER_ORDER_LED * len(led)
+    xp = XP_PER_ITEM * items + XP_PER_ORDER * len(orders) + XP_PER_ORDER_LED * len(led) + bonus_xp
     stats["badges"] = [{"id": b, "label": label, "emoji": emoji} for b, label, emoji, earned in BADGES if earned(stats)]
     stats["level"] = level_for(xp)
     return stats
@@ -65,13 +67,25 @@ def fun_facts(history: list[dict], names: dict[str, str], week: int) -> list[str
     return facts
 
 
+def past_orders(history: list[dict], member_id: str, pod_names: dict[str, str]) -> list[dict]:
+    """One entry per (week, pod) the neighbor bought in, newest first."""
+    orders: dict[tuple[int, str], dict] = {}
+    for line in (h for h in history if h["memberId"] == member_id):
+        order = orders.setdefault((line["week"], line["podId"]), {
+            "week": line["week"], "podId": line["podId"], "podName": pod_names.get(line["podId"], line["podId"]),
+            "items": [], "saved": SHIPPING_SAVED_PER_ORDER,
+        })
+        order["items"].append({"title": line["title"], "qty": line["qty"]})
+    return sorted(orders.values(), key=lambda o: -o["week"])
+
+
 def community_summary(data: dict) -> dict:
     history = data.get("history", [])
     current_week = max((h["week"] for h in history), default=0)
     names = {m["id"]: m["name"] for m in data["members"]}
     members = []
     for member in data["members"]:
-        stats = member_stats(member["id"], history, current_week)
+        stats = member_stats(member["id"], history, current_week, events.event_xp(data.get("events", []), member["id"]))
         stats["by_category"] = dict(stats["by_category"])
         members.append({"memberId": member["id"], "name": member["name"], **stats})
     leaderboard = sorted(members, key=lambda m: -m["level"]["xp"])

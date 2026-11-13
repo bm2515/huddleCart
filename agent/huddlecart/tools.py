@@ -21,14 +21,31 @@ def live_search_enabled() -> bool:
     return os.getenv("HUDDLECART_SEARCH") == "live" and bool(os.getenv("TAVILY_API_KEY"))
 
 
+FILLER_WORDS = {"of", "and", "the", "some", "for", "a", "an", "lb", "lbs", "oz", "pack", "pk", "please"}
+
+
+def product_text(product: dict) -> str:
+    return f"{product['title']} {product.get('brand', '')} {' '.join(product.get('tags', []))}".lower()
+
+
+CATALOG_WORDS = {w for p in CATALOG for w in re.findall(r"[a-z]+", product_text(p))}
+
+
+def query_words(query: str) -> list[str]:
+    return [w for w in re.findall(r"[a-z]+", query.lower()) if len(w) > 1 and w not in FILLER_WORDS]
+
+
 def search_snapshot(query: str, marketplace: str, limit: int = 6) -> list[dict]:
-    words = [w for w in re.findall(r"[a-z0-9]+", query.lower()) if len(w) > 1]
+    words = query_words(query)
 
     def score(product: dict) -> int:
-        text = f"{product['title']} {product.get('brand', '')} {' '.join(product.get('tags', []))}".lower()
-        return sum(word in text for word in words)
+        return sum(word in product_text(product) for word in words)
 
-    matches = [p for p in CATALOG if p["marketplace"] == marketplace and score(p) > 0]
+    # Only items we found as a real listing on the store, so every card links to an original product page.
+    matches = [p for p in CATALOG if p["marketplace"] == marketplace and p.get("verified") and score(p) > 0]
+    # Every catalog word in the request must match, so "oat milk" never returns plain milk; words like "dozen" are ignored.
+    required = [w for w in words if w in CATALOG_WORDS]
+    matches = [p for p in matches if all(w in product_text(p) for w in required)]
     matches.sort(key=lambda p: (-score(p), p["price"] or 999))
     return [{**p, "source": "snapshot", "checkedAt": store.iso()} for p in matches[:limit]]
 
@@ -47,6 +64,9 @@ def search_live(query: str, marketplace: str, limit: int = 6) -> list[dict]:
         title = re.sub(r"^Amazon\.com:\s*", "", result["title"])
         title = re.sub(r"\s*[|:-]\s*(Weee!?|Grocery & Gourmet Food|Amazon\.com).*$", "", title, flags=re.I)
         title = re.sub(r"\s+:\s+\w+$", "", title)
+        title = re.sub(r"^Get\s+(.*?)\s+Delivered\b.*$", r"\1", title, flags=re.I)
+        if not all(word in title.lower() for word in query_words(query)):
+            continue
         products.append({
             "id": f"live-{marketplace}-{index}-{abs(hash(result['url'])) % 10**8}",
             "marketplace": marketplace,

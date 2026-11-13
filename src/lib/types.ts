@@ -45,6 +45,8 @@ export interface CartLine {
   product: Product;
   qty: number;
   addedAt: string;
+  orderId?: string;
+  dishId?: string;
 }
 
 export interface ItemRequest {
@@ -56,6 +58,7 @@ export interface ItemRequest {
 export type Block =
   | { type: "text"; text: string }
   | { type: "searching"; queries: string[] }
+  | { type: "tool_calls"; calls: ToolCall[] }
   | {
       type: "product_choices";
       request: ItemRequest;
@@ -65,7 +68,73 @@ export type Block =
     }
   | { type: "out_of_stock"; request: ItemRequest; product?: Product; alternatives: Product[] }
   | { type: "cart_summary"; podId: string }
-  | { type: "pod_suggestions"; podIds: string[]; reason: string };
+  | { type: "pod_suggestions"; podIds: string[]; reason: string }
+  | { type: "checkout_review"; podId: string }
+  | { type: "order_placed"; order: PlacedOrder; pickupSpot: string; deliveryEta: string }
+  | { type: "event_invite"; eventId: string };
+
+export interface ToolCall {
+  tool: "get_pod_details" | "search_products" | "find_open_pods";
+  args: Record<string, string | number | null>;
+  summary: string;
+  source?: "live" | "snapshot";
+  sources?: { title: string; url: string; marketplace: Marketplace }[];
+}
+
+export interface PlacedOrder {
+  id: string;
+  number: string;
+  podId: string;
+  memberId: string;
+  items: { title: string; qty: number; total: number }[];
+  itemsTotal: number;
+  fee: number;
+  total: number;
+  placedAt: string;
+}
+
+export interface Dish {
+  id: string;
+  name: string;
+  course: "starter" | "main" | "side" | "dessert" | "drink";
+  veg: boolean;
+  recipe: string | null;
+  note: string | null;
+  cookId: string | null;
+  wished: boolean;
+  ingredients: Product[];
+  ingredientsTotal: number;
+}
+
+export interface CommunityEvent {
+  id: string;
+  podId: string;
+  hostId: string;
+  occasion: string;
+  emoji: string;
+  title: string;
+  date: string;
+  guests: number;
+  avoid: string | null;
+  dishes: Dish[];
+  vibes: string[];
+  podName: string;
+  podStatus: PodStatus;
+  closesAt: string;
+  pickupAt: string;
+  pickupSpot: string;
+  building: string;
+  marketplace: Marketplace;
+  claimedCount: number;
+  dishCount: number;
+  comingCount: number;
+  cookingCount: number;
+  vibesCount: number;
+  courseCounts: Record<string, number>;
+  upForGrabs: string[];
+}
+
+export type Menus = Record<string, { label: string; hint: string; title: string; emoji: string; dishes: { name: string; course: string; veg: boolean }[] }>;
 
 export interface ChatMessage {
   id: string;

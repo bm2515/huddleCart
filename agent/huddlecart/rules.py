@@ -1,4 +1,6 @@
 """Deterministic rules. No AI here: money, stock, cutoffs and permissions are plain code."""
+import hashlib
+import os
 from datetime import datetime
 from urllib.parse import quote, urlencode
 
@@ -79,3 +81,17 @@ def combined_order(pod: dict, cart: list[dict]) -> list[dict]:
 def venmo_link(handle: str, amount: float, note: str) -> str:
     query = urlencode({"txn": "pay", "amount": f"{amount:.2f}", "note": note})
     return f"https://venmo.com/{quote(handle)}?{query}"
+
+
+def pickup_code(pod_id: str, bag_number: int) -> str:
+    """Short code the neighbor shows at pickup so the leader hands over the right bag."""
+    pod_number = sum(ord(c) for c in pod_id) % 100
+    return f"HC-{pod_number:02d}{bag_number:02d}"
+
+
+PICKUP_SALT = os.getenv("HUDDLECART_PICKUP_SALT", "huddlecart-pickup")
+
+
+def pickup_token(pod_id: str, member_id: str) -> str:
+    """Hard-to-guess id for a bag's shareable pickup QR. Same bag, same token."""
+    return hashlib.sha256(f"{PICKUP_SALT}:{pod_id}:{member_id}".encode()).hexdigest()[:16]
