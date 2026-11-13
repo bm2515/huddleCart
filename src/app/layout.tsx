@@ -7,14 +7,14 @@ export const metadata: Metadata = {
   appleWebApp: { capable: true, title: "HuddleCart", statusBarStyle: "default" },
 };
 
-export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#1e1f22" };
+export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#faf8f3" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet" />
       </head>
       <body className="antialiased">
         {children}

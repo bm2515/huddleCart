@@ -1,0 +1,44 @@
+{
+  "holiday": {
+    "label": "Holiday", "hint": "Diwali, Lunar New Year", "title": "Diwali dinner", "emoji": "🪔",
+    "dishes": [
+      {"name": "Vegetable samosas", "course": "starter", "veg": true, "ingredients": [["Frozen vegetable samosas, 12 ct", 7.99], ["Tamarind chutney, 9 oz", 3.49]]},
+      {"name": "Chicken biryani", "course": "main", "veg": false, "ingredients": [["Royal basmati rice, 10 lb", 18.99], ["Boneless chicken thighs, 5 lb", 14.49], ["Shan biryani masala", 2.49], ["Crispy fried onions", 3.99]]},
+      {"name": "Paneer tikka masala", "course": "main", "veg": true, "ingredients": [["Paneer, 14 oz", 5.99], ["Tikka masala simmer sauce", 4.49]]},
+      {"name": "Garlic naan", "course": "side", "veg": true, "ingredients": [["Frozen garlic naan, 8 ct", 9.99], ["Garlic bulbs, 3 ct", 1.99], ["Salted butter", 2.99]]},
+      {"name": "Cucumber raita", "course": "side", "veg": true, "recipe": "cucumber raita, 15 min", "ingredients": [["Chobani whole milk yogurt, 32 oz", 5.99], ["English cucumbers, 3 ct", 2.97], ["Ground cumin, 2 oz", 1.49], ["Fresh mint, 1 bunch", 0.75]]},
+      {"name": "Gulab jamun", "course": "dessert", "veg": true, "ingredients": [["Gulab jamun mix", 3.99], ["Rose water", 2.49]]},
+      {"name": "Mango lassi", "course": "drink", "veg": true, "ingredients": [["Kesar mango pulp, 30 oz", 4.99], ["Plain yogurt, 32 oz", 3.99]]}
+    ]
+  },
+  "game_night": {
+    "label": "Game night", "hint": "Snacks and seltzer", "title": "Game night snacks", "emoji": "🎲",
+    "dishes": [
+      {"name": "Loaded nachos", "course": "starter", "veg": true, "ingredients": [["Tortilla chips, family size", 3.99], ["Shredded cheddar, 16 oz", 4.49], ["Chunky salsa, 16 oz", 3.49]]},
+      {"name": "Buffalo wings", "course": "main", "veg": false, "ingredients": [["Chicken wings, 3 lb", 11.99], ["Buffalo sauce", 3.29]]},
+      {"name": "Spinach dip", "course": "side", "veg": true, "ingredients": [["Sour cream, 16 oz", 2.49], ["Frozen spinach", 1.99], ["Ranch seasoning", 1.29]]},
+      {"name": "Spicy shrimp chips", "course": "side", "veg": false, "ingredients": [["Calbee Shrimp Chips Spicy 2.6oz", 2.19]]},
+      {"name": "Pocky bar", "course": "dessert", "veg": true, "ingredients": [["Pocky chocolate, 6 pack", 6.99]]},
+      {"name": "Lychee seltzer", "course": "drink", "veg": true, "ingredients": [["Sparkling lychee water, 12 pack", 7.99]]}
+    ]
+  },
+  "potluck": {
+    "label": "Potluck", "hint": "Everyone cooks one dish", "title": "Building potluck", "emoji": "🥘",
+    "dishes": [
+      {"name": "Cold sesame noodles", "course": "main", "veg": true, "ingredients": [["Udon noodles, 5 pack", 4.99], ["Sesame paste", 4.29], ["Scallions", 0.99]]},
+      {"name": "Kimchi fried rice", "course": "main", "veg": false, "ingredients": [["Jasmine rice, 5 lb", 12.50], ["Napa cabbage kimchi, 32 oz", 7.99], ["Eggs, 12 ct", 4.49]]},
+      {"name": "Cucumber salad", "course": "side", "veg": true, "ingredients": [["Persian cucumbers, 1 lb", 2.99], ["Rice vinegar", 2.49]]},
+      {"name": "Mochi platter", "course": "dessert", "veg": true, "ingredients": [["Mango mochi, 6 ct", 5.49]]},
+      {"name": "Milk tea", "course": "drink", "veg": true, "ingredients": [["Royal milk tea bottles, 6 pack", 8.99]]}
+    ]
+  },
+  "birthday": {
+    "label": "Birthday", "hint": "Cake, drinks, snacks", "title": "Birthday party", "emoji": "🎂",
+    "dishes": [
+      {"name": "Party snack board", "course": "starter", "veg": true, "ingredients": [["Hello Panda, 6 pack", 5.99], ["Seaweed snacks, 10 ct", 6.49]]},
+      {"name": "Dumpling tray", "course": "main", "veg": false, "ingredients": [["Pork & cabbage dumplings, 16 oz", 8.50], ["Dumpling sauce", 2.99]]},
+      {"name": "Birthday cake", "course": "dessert", "veg": true, "ingredients": [["Matcha roll cake", 12.99], ["Birthday candles", 1.99]]},
+      {"name": "Sparkling drinks", "course": "drink", "veg": true, "ingredients": [["Ramune soda, 6 pack", 9.99]]}
+    ]
+  }
+}

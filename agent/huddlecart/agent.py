@@ -4,8 +4,9 @@ load_pod -> understand -> search_catalog -> rank -> compose
 AI is used only in `understand` (read messy words) and `rank` (pick the best match).
 Everything else is a tool call or plain rules.
 """
+import operator
 import os
-from typing import Literal, TypedDict
+from typing import Annotated, Literal, TypedDict
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.language_models import BaseChatModel
@@ -14,7 +15,7 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field
 
-from . import store
+from . import rules, store
 from .tools import find_open_pods, get_pod_details, search_products
 
 PROVIDER = os.getenv("HUDDLECART_PROVIDER", "google" if os.getenv("GOOGLE_API_KEY") else "openai")
@@ -34,6 +35,8 @@ House rules (true for every pod):
 - Each buyer pays their items plus the pod's flat fee (usually $2). Payment goes to the leader by Venmo or Zelle.
 - Items are picked up at the pod's pickup spot.
 - Nothing is added to a cart until the neighbor taps Add. You only suggest.
+- Neighbors check out right here in the chat by tapping Place order. Their order then ships with the group order.
+- Neighbors can host events (dinners, game nights, potlucks) where others claim dishes; the ingredients join the group order.
 - Never invent prices or stock. Only use products returned by search.
 - If a request is vague, show options instead of guessing. If an item is out of stock, say so and offer alternatives.
 - Alcohol, tobacco and prescription items are not allowed.
@@ -47,9 +50,10 @@ class ItemRequest(BaseModel):
 
 
 class Understanding(BaseModel):
-    intent: Literal["add_items", "find_pod", "cart_status", "chit_chat", "not_allowed"] = Field(
+    intent: Literal["add_items", "find_pod", "cart_status", "checkout", "events", "chit_chat", "not_allowed"] = Field(
         description="add_items: wants groceries in this pod. find_pod: needs it by a deadline or asks which pod/store. "
-        "cart_status: asks about the cart. not_allowed: alcohol, tobacco, prescriptions."
+        "cart_status: asks about the cart. checkout: wants to place, finish or pay for their order. "
+        "events: asks about dinners, potlucks or parties, or wants to bring or claim a dish. not_allowed: alcohol, tobacco, prescriptions."
     )
     items: list[ItemRequest] = Field(default_factory=list, description="Every grocery mentioned, for add_items and find_pod")
     deadline_hours: float | None = Field(default=None, description="Hours from now the user needs it by, if stated")
@@ -78,6 +82,7 @@ class AgentState(TypedDict, total=False):
     candidates: list[list[dict]]
     ranking: Ranking
     blocks: list[dict]
+    tool_calls: Annotated[list[dict], operator.add]  # shown in chat so neighbors can see what was looked up
 
 
 def chat_model(name: str) -> BaseChatModel:
@@ -110,7 +115,20 @@ def chat_history(history: list[dict]) -> list:
 # ---------- nodes ----------
 
 def load_pod(state: AgentState) -> AgentState:
-    return {"pod": get_pod_details.invoke({"pod_id": state["pod_id"]})}
+    pod = get_pod_details.invoke({"pod_id": state["pod_id"]})
+    call = {"tool": "get_pod_details", "args": {"pod_id": state["pod_id"]}, "summary": f"{pod['name']} orders from {pod['marketplaceName']}"}
+    return {"pod": pod, "tool_calls": [call]}
+
+
+def search_call(query: str, marketplace: str, products: list[dict]) -> dict:
+    """What the chat shows for one search: the store, how many products came back, and links to the store pages."""
+    live = any(p.get("source") == "live" for p in products)
+    return {
+        "tool": "search_products", "args": {"query": query, "marketplace": marketplace},
+        "summary": f"{len(products)} {'product' if len(products) == 1 else 'products'} from {rules.MARKETPLACE_NAMES[marketplace]}",
+        "source": "live" if live else "snapshot",
+        "sources": [{"title": p["title"], "url": p["url"], "marketplace": p["marketplace"]} for p in products[:3]],
+    }
 
 
 def understand(state: AgentState) -> AgentState:
@@ -131,11 +149,15 @@ def search_catalog(state: AgentState) -> AgentState:
         marketplaces = [state["pod"]["marketplace"]]
     else:
         marketplaces = ["weee", "amazon_fresh"]
-    candidates = [
-        [product for marketplace in marketplaces for product in search_products.invoke({"query": item.query, "marketplace": marketplace})]
-        for item in understanding.items
-    ]
-    return {"candidates": candidates}
+    candidates, calls = [], []
+    for item in understanding.items:
+        found = []
+        for marketplace in marketplaces:
+            products = search_products.invoke({"query": item.query, "marketplace": marketplace})
+            calls.append(search_call(item.query, marketplace, products))
+            found += products
+        candidates.append(found)
+    return {"candidates": candidates, "tool_calls": calls}
 
 
 def rank(state: AgentState) -> AgentState:
@@ -156,13 +178,20 @@ def rank(state: AgentState) -> AgentState:
 def compose(state: AgentState) -> AgentState:
     understanding = state["understanding"]
     blocks = [{"type": "text", "text": understanding.reply}]
+    calls = list(state.get("tool_calls", []))
     if understanding.intent == "add_items":
         blocks += item_blocks(state)
     elif understanding.intent == "find_pod":
         blocks += pod_blocks(state)
+        hours = understanding.deadline_hours
+        calls.append({"tool": "find_open_pods", "args": {"deliver_within_hours": hours}, "summary": "Checked which open pods deliver in time"})
     elif understanding.intent == "cart_status":
         blocks.append({"type": "cart_summary", "podId": state["pod_id"]})
-    return {"blocks": blocks}
+    elif understanding.intent == "checkout":
+        blocks.append({"type": "checkout_review", "podId": state["pod_id"]})  # the neighbor taps Place order; the API places it
+    elif understanding.intent == "events":
+        blocks += [{"type": "event_invite", "eventId": e["id"]} for e in store.db().get("events", []) if e["podId"] == state["pod_id"]]
+    return {"blocks": [{"type": "tool_calls", "calls": calls}, *blocks]}
 
 
 # ---------- deterministic block builders ----------
@@ -255,7 +284,7 @@ agent_graph = build_graph()
 
 
 def run_agent(pod_id: str, member_id: str, message: str, history: list[dict] | None = None, tier: str = "fast", callbacks: list | None = None) -> dict:
-    state = {"pod_id": pod_id, "member_id": member_id, "message": message, "history": history or [], "tier": tier}
+    state = {"pod_id": pod_id, "member_id": member_id, "message": message, "history": history or [], "tier": tier, "tool_calls": []}
     config = {"run_name": "huddlecart_agent", "tags": [tier, MODELS[tier]], "metadata": {"pod_id": pod_id, "tier": tier}, "callbacks": callbacks or []}
     result = agent_graph.invoke(state, config=config)
     return {"blocks": result["blocks"], "understanding": result["understanding"].model_dump()}

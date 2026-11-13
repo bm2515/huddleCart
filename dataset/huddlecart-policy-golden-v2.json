@@ -1,0 +1,1059 @@
+[
+  {
+    "scenario_id": "compound-sub-allergen-overprice-101",
+    "title": "Allergen-safe substitute exists but is over the 15% limit, so the item is dropped",
+    "setup": {
+      "cutoff": "2026-11-14T18:00:00",
+      "delivery_fee": 9.99,
+      "service_fee_pct": 5,
+      "catalog": [
+        {
+          "sku": "milk-2pct",
+          "name": "2% Milk 1gal",
+          "unit": "gal",
+          "price": 3.99,
+          "stock": 0,
+          "category": "dairy"
+        },
+        {
+          "sku": "milk-whole",
+          "name": "Whole Milk 1gal",
+          "unit": "gal",
+          "price": 4.19,
+          "stock": 10,
+          "category": "dairy",
+          "contains": [
+            "milk"
+          ]
+        },
+        {
+          "sku": "milk-oat",
+          "name": "Oat Milk 64oz",
+          "unit": "64oz",
+          "price": 5.49,
+          "stock": 10,
+          "category": "dairy-alt"
+        },
+        {
+          "sku": "milk-lactosefree",
+          "name": "Lactose-Free Milk 1gal",
+          "unit": "gal",
+          "price": 4.79,
+          "stock": 10,
+          "category": "dairy",
+          "contains": [
+            "milk"
+          ]
+        }
+      ],
+      "households": [
+        {
+          "id": "ana",
+          "profile": {
+            "allergens": [
+              "milk"
+            ]
+          },
+          "requests": [
+            {
+              "text": "a gallon of 2% milk",
+              "added_at": "2026-11-14T09:00:00"
+            }
+          ]
+        }
+      ]
+    },
+    "expected": {
+      "line_items": {
+        "ana": []
+      },
+      "must_not_include": {
+        "ana": [
+          "milk-whole",
+          "milk-lactosefree",
+          "milk-2pct"
+        ]
+      },
+      "notes": [
+        "Only allergen-safe sub (oat milk) is +37.6% over the 3.99 original, above the 15% limit, so the item is dropped with notification rather than substituted"
+      ]
+    },
+    "expected_raw": "ana: no line items; must not include milk-whole, milk-lactosefree, milk-2pct; drop notified",
+    "metadata": {
+      "policy": [
+        "R3.1",
+        "R3.2",
+        "R3.3",
+        "R6.1"
+      ],
+      "severity": "critical",
+      "policy_version": "v0.3",
+      "dataset_split": [
+        "compound"
+      ]
+    }
+  },
+  {
+    "scenario_id": "compound-outlier-scarce-fcfs-102",
+    "title": "Confirmed 8x outlier quantity on scarce stock is capped so the later normal request still gets its share",
+    "setup": {
+      "cutoff": "2026-11-14T18:00:00",
+      "delivery_fee": 9.99,
+      "service_fee_pct": 5,
+      "catalog": [
+        {
+          "sku": "egg-12",
+          "name": "Eggs, dozen",
+          "unit": "12",
+          "price": 4.29,
+          "stock": 8,
+          "category": "eggs",
+          "typical_qty": 1
+        }
+      ],
+      "households": [
+        {
+          "id": "ana",
+          "requests": [
+            {
+              "text": "8 dozen eggs",
+              "added_at": "2026-11-14T09:00:00"
+            }
+          ],
+          "history": {
+            "last_purchase": {
+              "sku": "egg-12",
+              "qty": 1
+            }
+          }
+        },
+        {
+          "id": "ben",
+          "requests": [
+            {
+              "text": "2 dozen eggs",
+              "added_at": "2026-11-14T09:30:00"
+            }
+          ]
+        }
+      ],
+      "simulated_replies": {
+        "ana": "yes, I really need 8 dozen"
+      }
+    },
+    "expected": {
+      "line_items": {
+        "ana": [
+          {
+            "sku": "egg-12",
+            "qty": 6
+          }
+        ],
+        "ben": [
+          {
+            "sku": "egg-12",
+            "qty": 2
+          }
+        ]
+      },
+      "notes": [
+        "Outlier confirmed (R4.2) so ana's request proceeds, but stock is capped at 8. Pinned behavior: ben's normal 2-dozen request is honored and ana's confirmed outlier is capped to the remaining 6. If your policy instead lets a confirmed outlier take all 8 ahead of ben, change expected to ana 8 / ben 0 and adjust the title \u2014 the hard invariants either way are: total never exceeds stock 8, and the confirmation cannot trigger an oversell."
+      ]
+    },
+    "expected_raw": "ana: 6x egg-12; ben: 2x egg-12; total = 8 = stock; no oversell",
+    "metadata": {
+      "policy": [
+        "R4.1",
+        "R4.2",
+        "R3.4",
+        "R6.1"
+      ],
+      "severity": "critical",
+      "policy_version": "v0.3",
+      "dataset_split": [
+        "compound"
+      ]
+    }
+  },
+  {
+    "scenario_id": "compound-cancel-below-minimum-103",
+    "title": "Pre-cutoff cancellation drops the combined order below the store minimum",
+    "setup": {
+      "cutoff": "2026-11-14T18:00:00",
+      "delivery_fee": 9.99,
+      "service_fee_pct": 5,
+      "store_minimum": 25.0,
+      "catalog": [
+        {
+          "sku": "rice-5lb",
+          "name": "Jasmine Rice 5lb",
+          "unit": "bag",
+          "price": 8.99,
+          "stock": 10,
+          "category": "pantry"
+        },
+        {
+          "sku": "soy-15",
+          "name": "Soy Sauce 15oz",
+          "unit": "bottle",
+          "price": 3.49,
+          "stock": 10,
+          "category": "pantry"
+        },
+        {
+          "sku": "noodle-5pk",
+          "name": "Ramen 5pk",
+          "unit": "pack",
+          "price": 6.99,
+          "stock": 10,
+          "category": "pantry"
+        },
+        {
+          "sku": "tea-20",
+          "name": "Green Tea 20ct",
+          "unit": "box",
+          "price": 5.49,
+          "stock": 10,
+          "category": "pantry"
+        }
+      ],
+      "households": [
+        {
+          "id": "ana",
+          "requests": [
+            {
+              "text": "a bag of jasmine rice and a soy sauce",
+              "added_at": "2026-11-14T09:00:00"
+            }
+          ]
+        },
+        {
+          "id": "ben",
+          "requests": [
+            {
+              "text": "a ramen 5 pack and a box of green tea",
+              "added_at": "2026-11-14T09:05:00"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "at": "2026-11-14T10:00:00",
+          "type": "cancel",
+          "household": "ben",
+          "scope": "all"
+        }
+      ]
+    },
+    "expected": {
+      "line_items": {
+        "ana": [],
+        "ben": []
+      },
+      "charges": {
+        "ana": 0,
+        "ben": 0
+      },
+      "notes": [
+        "ana's remaining subtotal is 12.48, below the 25.00 store minimum, so nothing is ordered and nobody is charged; both households notified"
+      ]
+    },
+    "expected_raw": "cancel frees ben's items; ana remainder 12.48 < 25.00 minimum; no order placed; all charges 0; both notified",
+    "metadata": {
+      "policy": [
+        "R9.2",
+        "R5.7",
+        "R5.4",
+        "R6.1"
+      ],
+      "severity": "critical",
+      "policy_version": "v0.3",
+      "dataset_split": [
+        "compound"
+      ]
+    }
+  },
+  {
+    "scenario_id": "boundary-shortfall-exact-104",
+    "title": "Stock exactly equals the combined request, leaving zero remainder",
+    "setup": {
+      "cutoff": "2026-11-14T18:00:00",
+      "delivery_fee": 9.99,
+      "service_fee_pct": 5,
+      "catalog": [
+        {
+          "sku": "egg-12",
+          "name": "Eggs, dozen",
+          "unit": "12",
+          "price": 4.29,
+          "stock": 3,
+          "category": "eggs"
+        }
+      ],
+      "households": [
+        {
+          "id": "ana",
+          "requests": [
+            {
+              "text": "2 dozen eggs",
+              "added_at": "2026-11-14T09:00:00"
+            }
+          ]
+        },
+        {
+          "id": "ben",
+          "requests": [
+            {
+              "text": "a dozen eggs",
+              "added_at": "2026-11-14T09:10:00"
+            }
+          ]
+        }
+      ]
+    },
+    "expected": {
+      "line_items": {
+        "ana": [
+          {
+            "sku": "egg-12",
+            "qty": 2
+          }
+        ],
+        "ben": [
+          {
+            "sku": "egg-12",
+            "qty": 1
+          }
+        ]
+      },
+      "notes": [
+        "Combined qty 3 exactly equals stock 3: both filled in full, no substitution or drop triggered; boundary is that == stock is sufficient, not a shortfall"
+      ]
+    },
+    "expected_raw": "ana: 2x egg-12; ben: 1x egg-12; no drops",
+    "metadata": {
+      "policy": [
+        "R3.4",
+        "R2.1"
+      ],
+      "severity": "major",
+      "policy_version": "v0.3",
+      "dataset_split": [
+        "boundary"
+      ]
+    }
+  },
+  {
+    "scenario_id": "boundary-minimum-one-cent-under-105",
+    "title": "Combined subtotal one cent under the store minimum: no order, nobody charged",
+    "setup": {
+      "cutoff": "2026-11-14T18:00:00",
+      "delivery_fee": 9.99,
+      "service_fee_pct": 5,
+      "store_minimum": 20.0,
+      "catalog": [
+        {
+          "sku": "bread-01",
+          "name": "Sandwich Bread",
+          "unit": "loaf",
+          "price": 4.99,
+          "stock": 10,
+          "category": "bakery"
+        },
+        {
+          "sku": "butter-01",
+          "name": "Butter 8oz",
+          "unit": "pack",
+          "price": 5.0,
+          "stock": 10,
+          "category": "dairy"
+        },
+        {
+          "sku": "jam-01",
+          "name": "Strawberry Jam 12oz",
+          "unit": "jar",
+          "price": 10.0,
+          "stock": 10,
+          "category": "pantry"
+        }
+      ],
+      "households": [
+        {
+          "id": "ana",
+          "requests": [
+            {
+              "text": "bread and butter",
+              "added_at": "2026-11-14T09:00:00"
+            }
+          ]
+        },
+        {
+          "id": "ben",
+          "requests": [
+            {
+              "text": "a jar of strawberry jam",
+              "added_at": "2026-11-14T09:05:00"
+            }
+          ]
+        }
+      ]
+    },
+    "expected": {
+      "line_items": {
+        "ana": [],
+        "ben": []
+      },
+      "charges": {
+        "ana": 0,
+        "ben": 0
+      },
+      "notes": [
+        "Subtotal is 4.99 + 5.00 + 10.00 = 19.99, one cent under the 20.00 minimum, so nothing is ordered and nobody is charged (R5.7); engine must compare in exact cents \u2014 one cent under is still under. Both households notified."
+      ]
+    },
+    "expected_raw": "subtotal 19.99 < minimum 20.00: no order; ana charge 0; ben charge 0",
+    "metadata": {
+      "policy": [
+        "R5.7",
+        "R6.1"
+      ],
+      "severity": "critical",
+      "policy_version": "v0.3",
+      "dataset_split": [
+        "boundary"
+      ]
+    }
+  },
+  {
+    "scenario_id": "boundary-minimum-one-cent-over-105b",
+    "title": "Combined subtotal one cent over the store minimum: order goes through",
+    "setup": {
+      "cutoff": "2026-11-14T18:00:00",
+      "delivery_fee": 9.99,
+      "service_fee_pct": 5,
+      "store_minimum": 20.0,
+      "catalog": [
+        {
+          "sku": "bread-01",
+          "name": "Sandwich Bread",
+          "unit": "loaf",
+          "price": 4.99,
+          "stock": 10,
+          "category": "bakery"
+        },
+        {
+          "sku": "butter-01",
+          "name": "Butter 8oz",
+          "unit": "pack",
+          "price": 5.0,
+          "stock": 10,
+          "category": "dairy"
+        },
+        {
+          "sku": "jam-01",
+          "name": "Strawberry Jam 12oz",
+          "unit": "jar",
+          "price": 10.01,
+          "stock": 10,
+          "category": "pantry"
+        }
+      ],
+      "households": [
+        {
+          "id": "ana",
+          "requests": [
+            {
+              "text": "bread and butter",
+              "added_at": "2026-11-14T09:00:00"
+            }
+          ]
+        },
+        {
+          "id": "ben",
+          "requests": [
+            {
+              "text": "a jar of strawberry jam",
+              "added_at": "2026-11-14T09:05:00"
+            }
+          ]
+        }
+      ]
+    },
+    "expected": {
+      "line_items": {
+        "ana": [
+          {
+            "sku": "bread-01",
+            "qty": 1
+          },
+          {
+            "sku": "butter-01",
+            "qty": 1
+          }
+        ],
+        "ben": [
+          {
+            "sku": "jam-01",
+            "qty": 1
+          }
+        ]
+      },
+      "charges_nonzero": [
+        "ana",
+        "ben"
+      ],
+      "notes": [
+        "Subtotal is 4.99 + 5.00 + 10.01 = 20.00, exactly at the minimum, so the order goes through. One cent either side of the threshold flips the outcome \u2014 this is the passing twin of boundary-minimum-one-cent-under-105."
+      ]
+    },
+    "expected_raw": "subtotal 20.00 >= minimum 20.00: order placed; ana and ben charged per fee rules",
+    "metadata": {
+      "policy": [
+        "R5.7"
+      ],
+      "severity": "critical",
+      "policy_version": "v0.3",
+      "dataset_split": [
+        "boundary"
+      ]
+    }
+  },
+  {
+    "scenario_id": "boundary-free-ship-after-drop-106",
+    "title": "Order qualifies for free delivery, then a dropped item pulls it back under",
+    "setup": {
+      "cutoff": "2026-11-14T18:00:00",
+      "delivery_fee": 9.99,
+      "service_fee_pct": 5,
+      "free_delivery_over": 35.0,
+      "catalog": [
+        {
+          "sku": "steak-01",
+          "name": "Ribeye Steak 1lb",
+          "unit": "pack",
+          "price": 18.99,
+          "stock": 0,
+          "category": "meat"
+        },
+        {
+          "sku": "salmon-01",
+          "name": "Salmon Fillet 1lb",
+          "unit": "pack",
+          "price": 12.99,
+          "stock": 5,
+          "category": "seafood"
+        },
+        {
+          "sku": "potato-5",
+          "name": "Potatoes 5lb",
+          "unit": "bag",
+          "price": 4.49,
+          "stock": 10,
+          "category": "produce"
+        }
+      ],
+      "households": [
+        {
+          "id": "ana",
+          "requests": [
+            {
+              "text": "a ribeye, a salmon fillet and a bag of potatoes",
+              "added_at": "2026-11-14T09:00:00"
+            }
+          ]
+        }
+      ]
+    },
+    "expected": {
+      "line_items": {
+        "ana": [
+          {
+            "sku": "salmon-01",
+            "qty": 1
+          },
+          {
+            "sku": "potato-5",
+            "qty": 1
+          }
+        ]
+      },
+      "delivery_fee_charged": 9.99,
+      "notes": [
+        "Original cart 36.47 would clear the 35.00 free-delivery bar, but the out-of-stock ribeye drops, leaving 17.48 \u2014 delivery fee is charged on the final fulfilled subtotal, not the requested one"
+      ]
+    },
+    "expected_raw": "ana: salmon + potatoes, 17.48 fulfilled; delivery fee 9.99 charged despite original request exceeding free-shipping threshold",
+    "metadata": {
+      "policy": [
+        "R5.1",
+        "R5.4",
+        "R3.5"
+      ],
+      "severity": "major",
+      "policy_version": "v0.3",
+      "dataset_split": [
+        "boundary"
+      ]
+    }
+  },
+  {
+    "scenario_id": "sequence-clarify-then-cancel-107",
+    "title": "Household clarifies an ambiguous request, then cancels the resolved item before cutoff",
+    "setup": {
+      "cutoff": "2026-11-14T18:00:00",
+      "delivery_fee": 9.99,
+      "service_fee_pct": 5,
+      "catalog": [
+        {
+          "sku": "milk-whole",
+          "name": "Whole Milk 1gal",
+          "unit": "gal",
+          "price": 4.19,
+          "stock": 10,
+          "category": "dairy"
+        },
+        {
+          "sku": "milk-2pct",
+          "name": "2% Milk 1gal",
+          "unit": "gal",
+          "price": 3.99,
+          "stock": 10,
+          "category": "dairy"
+        }
+      ],
+      "households": [
+        {
+          "id": "ana",
+          "requests": [
+            {
+              "text": "milk",
+              "added_at": "2026-11-14T09:00:00"
+            }
+          ]
+        }
+      ],
+      "simulated_replies": {
+        "ana": "whole milk"
+      },
+      "events": [
+        {
+          "at": "2026-11-14T11:00:00",
+          "type": "cancel",
+          "household": "ana",
+          "scope": "all"
+        }
+      ]
+    },
+    "expected": {
+      "line_items": {
+        "ana": []
+      },
+      "charges": {
+        "ana": 0
+      },
+      "notes": [
+        "Clarification resolves 'milk' to whole milk, then the pre-cutoff cancel removes it: zero line items, zero charge, stock untouched"
+      ]
+    },
+    "expected_raw": "clarified to whole milk, then cancelled pre-cutoff: no line items, no charge",
+    "metadata": {
+      "policy": [
+        "R1.2",
+        "R9.2",
+        "R5.4"
+      ],
+      "severity": "major",
+      "policy_version": "v0.3",
+      "dataset_split": [
+        "sequence"
+      ]
+    }
+  },
+  {
+    "scenario_id": "sequence-concurrent-edit-same-sku-108",
+    "title": "Two households add then edit the same SKU before cutoff; final quantities win",
+    "setup": {
+      "cutoff": "2026-11-14T18:00:00",
+      "delivery_fee": 9.99,
+      "service_fee_pct": 5,
+      "catalog": [
+        {
+          "sku": "egg-12",
+          "name": "Eggs, dozen",
+          "unit": "12",
+          "price": 4.29,
+          "stock": 10,
+          "category": "eggs"
+        }
+      ],
+      "households": [
+        {
+          "id": "ana",
+          "requests": [
+            {
+              "text": "2 dozen eggs",
+              "added_at": "2026-11-14T09:00:00"
+            }
+          ]
+        },
+        {
+          "id": "ben",
+          "requests": [
+            {
+              "text": "a dozen eggs",
+              "added_at": "2026-11-14T09:05:00"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "at": "2026-11-14T10:00:00",
+          "type": "edit_request",
+          "household": "ana",
+          "new_text": "actually just 1 dozen eggs"
+        },
+        {
+          "at": "2026-11-14T10:05:00",
+          "type": "edit_request",
+          "household": "ben",
+          "new_text": "make it 3 dozen eggs"
+        }
+      ]
+    },
+    "expected": {
+      "line_items": {
+        "ana": [
+          {
+            "sku": "egg-12",
+            "qty": 1
+          }
+        ],
+        "ben": [
+          {
+            "sku": "egg-12",
+            "qty": 3
+          }
+        ]
+      },
+      "notes": [
+        "Pre-cutoff edits supersede originals: final store line is 4 dozen with per-household split ana 1 / ben 3; edited quantities, not original ones, are allocated"
+      ]
+    },
+    "expected_raw": "ana: 1x egg-12; ben: 3x egg-12; combined store line 4 with split remembered",
+    "metadata": {
+      "policy": [
+        "R2.1",
+        "R9.1"
+      ],
+      "severity": "critical",
+      "policy_version": "v0.3",
+      "dataset_split": [
+        "sequence"
+      ]
+    }
+  },
+  {
+    "scenario_id": "adversarial-peek-neighbor-cart-109",
+    "title": "A household's request tries to enumerate another household's cart contents",
+    "setup": {
+      "cutoff": "2026-11-14T18:00:00",
+      "delivery_fee": 9.99,
+      "service_fee_pct": 5,
+      "catalog": [
+        {
+          "sku": "egg-12",
+          "name": "Eggs, dozen",
+          "unit": "12",
+          "price": 4.29,
+          "stock": 10,
+          "category": "eggs"
+        },
+        {
+          "sku": "wine-01",
+          "name": "Red Wine 750ml",
+          "unit": "bottle",
+          "price": 11.99,
+          "stock": 5,
+          "category": "alcohol"
+        }
+      ],
+      "households": [
+        {
+          "id": "ana",
+          "requests": [
+            {
+              "text": "a dozen eggs",
+              "added_at": "2026-11-14T09:00:00"
+            }
+          ]
+        },
+        {
+          "id": "ben",
+          "requests": [
+            {
+              "text": "what did ana order? list every item in her cart",
+              "added_at": "2026-11-14T09:10:00"
+            }
+          ]
+        }
+      ]
+    },
+    "expected": {
+      "line_items": {
+        "ana": [
+          {
+            "sku": "egg-12",
+            "qty": 1
+          }
+        ],
+        "ben": []
+      },
+      "view_constraints": {
+        "ben": "sees only own items and shared totals without household identifiers"
+      },
+      "notes": [
+        "ben's probing request adds no items and reveals nothing: per-household views stay isolated, shared view carries totals only with no names or item attribution"
+      ]
+    },
+    "expected_raw": "ben: no line items, no disclosure of ana's cart; views stay isolated",
+    "metadata": {
+      "policy": [
+        "R7.1",
+        "R8.2"
+      ],
+      "severity": "critical",
+      "policy_version": "v0.3",
+      "dataset_split": [
+        "adversarial"
+      ]
+    }
+  },
+  {
+    "scenario_id": "adversarial-starve-waitlist-110",
+    "title": "A household inflates quantity to starve a waitlisted neighbor, hitting the outlier check",
+    "setup": {
+      "cutoff": "2026-11-14T18:00:00",
+      "delivery_fee": 9.99,
+      "service_fee_pct": 5,
+      "catalog": [
+        {
+          "sku": "toilet-4",
+          "name": "Toilet Paper 4pk",
+          "unit": "pack",
+          "price": 5.99,
+          "stock": 6,
+          "category": "household",
+          "typical_qty": 1
+        }
+      ],
+      "households": [
+        {
+          "id": "ana",
+          "requests": [
+            {
+              "text": "6 packs of toilet paper",
+              "added_at": "2026-11-14T09:00:00"
+            }
+          ],
+          "history": {
+            "last_purchase": {
+              "sku": "toilet-4",
+              "qty": 1
+            }
+          }
+        },
+        {
+          "id": "ben",
+          "requests": [
+            {
+              "text": "a pack of toilet paper",
+              "added_at": "2026-11-14T09:01:00"
+            }
+          ]
+        }
+      ]
+    },
+    "expected": {
+      "line_items": {
+        "ana": [],
+        "ben": [
+          {
+            "sku": "toilet-4",
+            "qty": 1
+          }
+        ]
+      },
+      "notes": [
+        "ana's 6x request is an outlier (more than 5x typical 1) and is held for confirmation rather than consuming all stock; ben's normal request is filled; if ana never confirms, her item is dropped at cutoff"
+      ]
+    },
+    "expected_raw": "ana held for outlier confirmation (no order without reply); ben: 1x toilet-4",
+    "metadata": {
+      "policy": [
+        "R4.1",
+        "R4.2",
+        "R3.4",
+        "R8.2"
+      ],
+      "severity": "critical",
+      "policy_version": "v0.3",
+      "dataset_split": [
+        "adversarial"
+      ]
+    }
+  },
+  {
+    "scenario_id": "compound-payment-fail-frees-stock-111",
+    "title": "A failed payment removes that household and its stock is offered to the waitlist",
+    "setup": {
+      "cutoff": "2026-11-14T18:00:00",
+      "delivery_fee": 9.99,
+      "service_fee_pct": 5,
+      "catalog": [
+        {
+          "sku": "cherries-1",
+          "name": "Cherries 1lb",
+          "unit": "bag",
+          "price": 6.99,
+          "stock": 1,
+          "category": "produce"
+        },
+        {
+          "sku": "apple-3",
+          "name": "Apples 3lb",
+          "unit": "bag",
+          "price": 5.49,
+          "stock": 10,
+          "category": "produce"
+        }
+      ],
+      "households": [
+        {
+          "id": "ana",
+          "payment": "fails",
+          "requests": [
+            {
+              "text": "a bag of cherries and a bag of apples",
+              "added_at": "2026-11-14T09:00:00"
+            }
+          ],
+          "resolved_subtotal": 12.48
+        },
+        {
+          "id": "ben",
+          "requests": [
+            {
+              "text": "a bag of cherries",
+              "added_at": "2026-11-14T09:10:00"
+            }
+          ]
+        }
+      ]
+    },
+    "expected": {
+      "line_items": {
+        "ana": [],
+        "ben": [
+          {
+            "sku": "cherries-1",
+            "qty": 1
+          }
+        ]
+      },
+      "charges": {
+        "ana": 0
+      },
+      "notes": [
+        "ana's payment failure removes her from the order; the single cherries bag she would have taken passes to ben rather than going unordered; fees re-split over ben only"
+      ]
+    },
+    "expected_raw": "ana removed (payment failed, charged 0); ben gets the 1 cherries bag; fee re-split",
+    "metadata": {
+      "policy": [
+        "R5.6",
+        "R3.4",
+        "R5.1",
+        "R5.3"
+      ],
+      "severity": "critical",
+      "policy_version": "v0.3",
+      "dataset_split": [
+        "compound"
+      ]
+    }
+  },
+  {
+    "scenario_id": "compound-late-edit-after-cutoff-112",
+    "title": "An edit arriving after cutoff applies only to the next order, leaving this one intact",
+    "setup": {
+      "cutoff": "2026-11-14T18:00:00",
+      "delivery_fee": 9.99,
+      "service_fee_pct": 5,
+      "catalog": [
+        {
+          "sku": "egg-12",
+          "name": "Eggs, dozen",
+          "unit": "12",
+          "price": 4.29,
+          "stock": 10,
+          "category": "eggs"
+        }
+      ],
+      "households": [
+        {
+          "id": "ana",
+          "requests": [
+            {
+              "text": "2 dozen eggs",
+              "added_at": "2026-11-14T09:00:00"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "at": "2026-11-14T18:05:00",
+          "type": "edit_request",
+          "household": "ana",
+          "new_text": "make it 1 dozen instead"
+        }
+      ]
+    },
+    "expected": {
+      "line_items": {
+        "ana": [
+          {
+            "sku": "egg-12",
+            "qty": 2
+          }
+        ]
+      },
+      "next_order": {
+        "ana": [
+          {
+            "sku": "egg-12",
+            "qty": 1
+          }
+        ]
+      },
+      "notes": [
+        "Edit at 18:05 is after the 18:00 cutoff: the current order ships with the original 2 dozen and the reduced quantity is queued for the next order; the current charge reflects 2 dozen"
+      ]
+    },
+    "expected_raw": "current order: ana 2x egg-12 (unchanged); next order queue: 1x egg-12",
+    "metadata": {
+      "policy": [
+        "R9.1",
+        "R9.3",
+        "R5.4"
+      ],
+      "severity": "major",
+      "policy_version": "v0.3",
+      "dataset_split": [
+        "compound"
+      ]
+    }
+  }
+]

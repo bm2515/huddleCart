@@ -49,7 +49,10 @@ def seed() -> dict:
         _pod("asian-snacks", "Asian snack lovers", "mei", ["mei", "jason", "bisma"], "weee", 49, 4, 22, "The House reception", "The House, Roosevelt Island", "Asian snacks"),
         _pod("fresh-basics", "Fresh basics", "uj", ["uj", "dua", "bisma"], "amazon_fresh", 35, 6, 18, "Tata front desk", "Tata Innovation Center"),
     ]
-    return {"members": members, "pods": pods, "cart": [], "messages": [], "pickups": {}, "history": seed_history()}
+    from .events import seed_events
+
+    events = seed_events({p["id"]: p for p in pods})
+    return {"members": members, "pods": pods, "cart": [], "messages": [], "pickups": {}, "history": seed_history(), "events": events, "checkouts": []}
 
 
 def seed_history() -> list[dict]:
@@ -78,6 +81,8 @@ def db() -> dict:
         if _db is None:
             _db = seed()
             save()
+        _db.setdefault("events", [])
+        _db.setdefault("checkouts", [])
     return _db
 
 
