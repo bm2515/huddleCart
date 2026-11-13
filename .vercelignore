@@ -1,0 +1,9 @@
+node_modules
+.next
+.data
+agent/.venv
+agent/.data
+agent/evals
+**/__pycache__
+.pytest_cache
+tsconfig.tsbuildinfo

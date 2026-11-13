@@ -1,0 +1,1660 @@
+[
+ {
+  "case": "c01",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 2.2,
+  "tokens_in": 688,
+  "tokens_out": 147,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Here are some shrimp chips you can add to your order."
+   },
+   {
+    "type": "product_choices",
+    "request": {
+     "query": "shrimp chips",
+     "qty": 2,
+     "notes": null
+    },
+    "products": [
+     {
+      "id": "w-shrimp-chips",
+      "marketplace": "weee",
+      "title": "Calbee Shrimp Chips Original 2.6oz",
+      "price": 1.99,
+      "unit": "bag",
+      "inStock": true,
+      "tags": [
+       "shrimp",
+       "chips",
+       "snack",
+       "calbee",
+       "chip"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Calbee+Shrimp+Chips+Original+2.6oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:23:11.346902+00:00"
+     },
+     {
+      "id": "w-shrimp-chips-spicy",
+      "marketplace": "weee",
+      "title": "Calbee Shrimp Chips Spicy 2.6oz",
+      "price": 2.19,
+      "unit": "bag",
+      "inStock": false,
+      "tags": [
+       "shrimp",
+       "chips",
+       "spicy",
+       "snack",
+       "calbee"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Calbee+Shrimp+Chips+Spicy+2.6oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:23:11.346911+00:00"
+     }
+    ],
+    "recommendedId": "w-shrimp-chips",
+    "reason": "Exact match for Calbee Original shrimp chips."
+   }
+  ],
+  "understanding": {
+   "intent": "add_items",
+   "items": [
+    {
+     "query": "shrimp chips",
+     "qty": 2,
+     "notes": null
+    }
+   ],
+   "deadline_hours": null,
+   "reply": "Here are some shrimp chips you can add to your order."
+  },
+  "checks": {
+   "intent": true,
+   "item_1": true
+  },
+  "score": 1.0,
+  "passed": true,
+  "message": "2 shrimp chips",
+  "tests": "simple match, quantity"
+ },
+ {
+  "case": "c02",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 1.98,
+  "tokens_in": 819,
+  "tokens_out": 154,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "I found these spicy shrimp chips on Weee!"
+   },
+   {
+    "type": "product_choices",
+    "request": {
+     "query": "spicy shrimp chips",
+     "qty": 1,
+     "notes": null
+    },
+    "products": [
+     {
+      "id": "w-shrimp-chips",
+      "marketplace": "weee",
+      "title": "Calbee Shrimp Chips Original 2.6oz",
+      "price": 1.99,
+      "unit": "bag",
+      "inStock": true,
+      "tags": [
+       "shrimp",
+       "chips",
+       "snack",
+       "calbee",
+       "chip"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Calbee+Shrimp+Chips+Original+2.6oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:23:13.322809+00:00"
+     },
+     {
+      "id": "w-chili-crisp",
+      "marketplace": "weee",
+      "title": "Lao Gan Ma Spicy Chili Crisp 7.41oz",
+      "price": 3.69,
+      "unit": "jar",
+      "inStock": true,
+      "tags": [
+       "chili",
+       "crisp",
+       "oil",
+       "lao",
+       "gan",
+       "ma",
+       "spicy",
+       "sauce"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Lao+Gan+Ma+Spicy+Chili+Crisp+7.41oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:23:13.322813+00:00"
+     },
+     {
+      "id": "w-shin-4",
+      "marketplace": "weee",
+      "title": "Nongshim Shin Ramyun 4pk",
+      "price": 5.49,
+      "unit": "pack",
+      "inStock": true,
+      "tags": [
+       "shin",
+       "ramyun",
+       "ramen",
+       "noodles",
+       "spicy",
+       "nongshim"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Nongshim+Shin+Ramyun+4pk",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:23:13.322815+00:00"
+     },
+     {
+      "id": "w-buldak-5",
+      "marketplace": "weee",
+      "title": "Samyang Buldak Hot Chicken Ramen 5pk",
+      "price": 7.49,
+      "unit": "pack",
+      "inStock": true,
+      "tags": [
+       "buldak",
+       "spicy",
+       "noodles",
+       "ramen",
+       "fire",
+       "hot",
+       "chicken",
+       "samyang"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Samyang+Buldak+Hot+Chicken+Ramen+5pk",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:23:13.322818+00:00"
+     }
+    ],
+    "recommendedId": null,
+    "reason": null
+   }
+  ],
+  "understanding": {
+   "intent": "add_items",
+   "items": [
+    {
+     "query": "spicy shrimp chips",
+     "qty": 1,
+     "notes": null
+    }
+   ],
+   "deadline_hours": null,
+   "reply": "I found these spicy shrimp chips on Weee!"
+  },
+  "checks": {
+   "intent": true,
+   "item_1": false
+  },
+  "score": 0.5,
+  "passed": false,
+  "message": "can I get the spicy shrimp chips",
+  "tests": "out of stock flagged"
+ },
+ {
+  "case": "c03",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 207.25,
+  "tokens_in": 744,
+  "tokens_out": 151,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Here are some Buldak noodles options you can add to the pod cart."
+   },
+   {
+    "type": "product_choices",
+    "request": {
+     "query": "buldak noodles",
+     "qty": 1,
+     "notes": null
+    },
+    "products": [
+     {
+      "id": "w-indomie",
+      "marketplace": "weee",
+      "title": "Indomie Mi Goreng Fried Noodles 5pk",
+      "price": 3.99,
+      "unit": "pack",
+      "inStock": true,
+      "tags": [
+       "indomie",
+       "mi",
+       "goreng",
+       "noodles",
+       "fried",
+       "instant"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Indomie+Mi+Goreng+Fried+Noodles+5pk",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:40.556143+00:00"
+     },
+     {
+      "id": "w-shin-4",
+      "marketplace": "weee",
+      "title": "Nongshim Shin Ramyun 4pk",
+      "price": 5.49,
+      "unit": "pack",
+      "inStock": true,
+      "tags": [
+       "shin",
+       "ramyun",
+       "ramen",
+       "noodles",
+       "spicy",
+       "nongshim"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Nongshim+Shin+Ramyun+4pk",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:40.556146+00:00"
+     },
+     {
+      "id": "w-buldak-5",
+      "marketplace": "weee",
+      "title": "Samyang Buldak Hot Chicken Ramen 5pk",
+      "price": 7.49,
+      "unit": "pack",
+      "inStock": true,
+      "tags": [
+       "buldak",
+       "spicy",
+       "noodles",
+       "ramen",
+       "fire",
+       "hot",
+       "chicken",
+       "samyang"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Samyang+Buldak+Hot+Chicken+Ramen+5pk",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:40.556130+00:00"
+     },
+     {
+      "id": "w-buldak-carbo",
+      "marketplace": "weee",
+      "title": "Samyang Buldak Carbonara Ramen 5pk",
+      "price": 7.99,
+      "unit": "pack",
+      "inStock": true,
+      "tags": [
+       "buldak",
+       "carbonara",
+       "spicy",
+       "noodles",
+       "ramen",
+       "samyang"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Samyang+Buldak+Carbonara+Ramen+5pk",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:40.556140+00:00"
+     }
+    ],
+    "recommendedId": "w-buldak-5",
+    "reason": "Best match for buldak noodles and in stock."
+   }
+  ],
+  "understanding": {
+   "intent": "add_items",
+   "items": [
+    {
+     "query": "buldak noodles",
+     "qty": 1,
+     "notes": null
+    }
+   ],
+   "deadline_hours": null,
+   "reply": "Here are some Buldak noodles options you can add to the pod cart."
+  },
+  "checks": {
+   "intent": true,
+   "item_1": true
+  },
+  "score": 1.0,
+  "passed": true,
+  "message": "buldak noodles",
+  "tests": "brand nickname"
+ },
+ {
+  "case": "c04",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 1.64,
+  "tokens_in": 723,
+  "tokens_out": 148,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Here are some frozen dumplings you can add to the pod."
+   },
+   {
+    "type": "out_of_stock",
+    "request": {
+     "query": "frozen dumplings",
+     "qty": 2,
+     "notes": null
+    },
+    "product": {
+     "id": "w-dumpling-chicken",
+     "marketplace": "weee",
+     "title": "Wei-Chuan Chicken & Cilantro Dumplings 24oz",
+     "price": 7.99,
+     "unit": "bag",
+     "inStock": false,
+     "tags": [
+      "dumplings",
+      "frozen",
+      "chicken",
+      "cilantro",
+      "weichuan"
+     ],
+     "url": "https://www.sayweee.com/en/search?keyword=Wei-Chuan+Chicken+&+Cilantro+Dumplings+24oz",
+     "source": "snapshot",
+     "checkedAt": "2026-11-12T22:26:42.378764+00:00"
+    },
+    "alternatives": [
+     {
+      "id": "w-dumpling-veg",
+      "marketplace": "weee",
+      "title": "Bibigo Vegetable Dumplings 24oz",
+      "price": 8.49,
+      "unit": "bag",
+      "inStock": true,
+      "tags": [
+       "dumplings",
+       "frozen",
+       "vegetable",
+       "vegetarian",
+       "veggie",
+       "mandu",
+       "bibigo"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Bibigo+Vegetable+Dumplings+24oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:42.378774+00:00"
+     },
+     {
+      "id": "w-dumpling-pork",
+      "marketplace": "weee",
+      "title": "Bibigo Pork & Vegetable Dumplings 24oz",
+      "price": 8.99,
+      "unit": "bag",
+      "inStock": true,
+      "tags": [
+       "dumplings",
+       "frozen",
+       "pork",
+       "mandu",
+       "bibigo",
+       "gyoza"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Bibigo+Pork+&+Vegetable+Dumplings+24oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:42.378777+00:00"
+     }
+    ]
+   }
+  ],
+  "understanding": {
+   "intent": "add_items",
+   "items": [
+    {
+     "query": "frozen dumplings",
+     "qty": 2,
+     "notes": null
+    }
+   ],
+   "deadline_hours": null,
+   "reply": "Here are some frozen dumplings you can add to the pod."
+  },
+  "checks": {
+   "intent": true,
+   "item_1": false
+  },
+  "score": 0.5,
+  "passed": false,
+  "message": "2 bags of frozen dumplings",
+  "tests": "vague, must skip out-of-stock chicken"
+ },
+ {
+  "case": "c05",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 2.16,
+  "tokens_in": 752,
+  "tokens_out": 149,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Here are some chicken dumplings you can add to the pod."
+   },
+   {
+    "type": "out_of_stock",
+    "request": {
+     "query": "chicken dumplings",
+     "qty": 1,
+     "notes": null
+    },
+    "product": {
+     "id": "w-dumpling-chicken",
+     "marketplace": "weee",
+     "title": "Wei-Chuan Chicken & Cilantro Dumplings 24oz",
+     "price": 7.99,
+     "unit": "bag",
+     "inStock": false,
+     "tags": [
+      "dumplings",
+      "frozen",
+      "chicken",
+      "cilantro",
+      "weichuan"
+     ],
+     "url": "https://www.sayweee.com/en/search?keyword=Wei-Chuan+Chicken+&+Cilantro+Dumplings+24oz",
+     "source": "snapshot",
+     "checkedAt": "2026-11-12T22:26:44.404019+00:00"
+    },
+    "alternatives": [
+     {
+      "id": "w-buldak-5",
+      "marketplace": "weee",
+      "title": "Samyang Buldak Hot Chicken Ramen 5pk",
+      "price": 7.49,
+      "unit": "pack",
+      "inStock": true,
+      "tags": [
+       "buldak",
+       "spicy",
+       "noodles",
+       "ramen",
+       "fire",
+       "hot",
+       "chicken",
+       "samyang"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Samyang+Buldak+Hot+Chicken+Ramen+5pk",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:44.404029+00:00"
+     },
+     {
+      "id": "w-dumpling-veg",
+      "marketplace": "weee",
+      "title": "Bibigo Vegetable Dumplings 24oz",
+      "price": 8.49,
+      "unit": "bag",
+      "inStock": true,
+      "tags": [
+       "dumplings",
+       "frozen",
+       "vegetable",
+       "vegetarian",
+       "veggie",
+       "mandu",
+       "bibigo"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Bibigo+Vegetable+Dumplings+24oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:44.404032+00:00"
+     },
+     {
+      "id": "w-dumpling-pork",
+      "marketplace": "weee",
+      "title": "Bibigo Pork & Vegetable Dumplings 24oz",
+      "price": 8.99,
+      "unit": "bag",
+      "inStock": true,
+      "tags": [
+       "dumplings",
+       "frozen",
+       "pork",
+       "mandu",
+       "bibigo",
+       "gyoza"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Bibigo+Pork+&+Vegetable+Dumplings+24oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:44.404035+00:00"
+     }
+    ]
+   }
+  ],
+  "understanding": {
+   "intent": "add_items",
+   "items": [
+    {
+     "query": "chicken dumplings",
+     "qty": 1,
+     "notes": null
+    }
+   ],
+   "deadline_hours": null,
+   "reply": "Here are some chicken dumplings you can add to the pod."
+  },
+  "checks": {
+   "intent": true,
+   "item_1": true
+  },
+  "score": 1.0,
+  "passed": true,
+  "message": "chicken dumplings please",
+  "tests": "out of stock flagged"
+ },
+ {
+  "case": "c06",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 1.86,
+  "tokens_in": 692,
+  "tokens_out": 229,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Here are some tofu and bok choy options you can add to our Weee! order."
+   },
+   {
+    "type": "product_choices",
+    "request": {
+     "query": "tofu",
+     "qty": 1,
+     "notes": null
+    },
+    "products": [
+     {
+      "id": "w-tofu",
+      "marketplace": "weee",
+      "title": "House Foods Firm Tofu 14oz",
+      "price": 2.29,
+      "unit": "box",
+      "inStock": true,
+      "tags": [
+       "tofu",
+       "firm",
+       "soybean"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=House+Foods+Firm+Tofu+14oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:46.250829+00:00"
+     }
+    ],
+    "recommendedId": "w-tofu",
+    "reason": "Exact match and in stock."
+   },
+   {
+    "type": "product_choices",
+    "request": {
+     "query": "bok choy",
+     "qty": 1,
+     "notes": null
+    },
+    "products": [
+     {
+      "id": "w-bokchoy",
+      "marketplace": "weee",
+      "title": "Baby Bok Choy 1lb",
+      "price": 2.49,
+      "unit": "lb",
+      "inStock": true,
+      "tags": [
+       "bok",
+       "choy",
+       "baby",
+       "greens",
+       "vegetable"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Baby+Bok+Choy+1lb",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:46.252150+00:00"
+     }
+    ],
+    "recommendedId": "w-bokchoy",
+    "reason": "Exact match and in stock."
+   }
+  ],
+  "understanding": {
+   "intent": "add_items",
+   "items": [
+    {
+     "query": "tofu",
+     "qty": 1,
+     "notes": null
+    },
+    {
+     "query": "bok choy",
+     "qty": 1,
+     "notes": null
+    }
+   ],
+   "deadline_hours": null,
+   "reply": "Here are some tofu and bok choy options you can add to our Weee! order."
+  },
+  "checks": {
+   "intent": true,
+   "item_1": true,
+   "item_2": true
+  },
+  "score": 1.0,
+  "passed": true,
+  "message": "tofu and bok choy",
+  "tests": "two items in one message"
+ },
+ {
+  "case": "c07",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 1.95,
+  "tokens_in": 690,
+  "tokens_out": 146,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Here are some Pocky options for you to choose from."
+   },
+   {
+    "type": "product_choices",
+    "request": {
+     "query": "pocky",
+     "qty": 3,
+     "notes": null
+    },
+    "products": [
+     {
+      "id": "w-pocky",
+      "marketplace": "weee",
+      "title": "Glico Pocky Chocolate 2.47oz",
+      "price": 1.79,
+      "unit": "box",
+      "inStock": true,
+      "tags": [
+       "pocky",
+       "chocolate",
+       "sticks",
+       "snack",
+       "glico"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Glico+Pocky+Chocolate+2.47oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:48.020233+00:00"
+     },
+     {
+      "id": "w-pocky-straw",
+      "marketplace": "weee",
+      "title": "Glico Pocky Strawberry 2.47oz",
+      "price": 1.79,
+      "unit": "box",
+      "inStock": true,
+      "tags": [
+       "pocky",
+       "strawberry",
+       "sticks",
+       "snack",
+       "glico"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Glico+Pocky+Strawberry+2.47oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:48.020243+00:00"
+     }
+    ],
+    "recommendedId": "w-pocky",
+    "reason": "Exact match for chocolate Pocky."
+   }
+  ],
+  "understanding": {
+   "intent": "add_items",
+   "items": [
+    {
+     "query": "pocky",
+     "qty": 3,
+     "notes": null
+    }
+   ],
+   "deadline_hours": null,
+   "reply": "Here are some Pocky options for you to choose from."
+  },
+  "checks": {
+   "intent": true,
+   "item_1": true
+  },
+  "score": 1.0,
+  "passed": true,
+  "message": "3 pocky",
+  "tests": "flavor ambiguity"
+ },
+ {
+  "case": "c08",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 3.16,
+  "tokens_in": 679,
+  "tokens_out": 152,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Here is the jasmine rice I found on Weee!."
+   },
+   {
+    "type": "product_choices",
+    "request": {
+     "query": "jasmin rice",
+     "qty": 1,
+     "notes": "5 lb"
+    },
+    "products": [
+     {
+      "id": "w-basmati",
+      "marketplace": "weee",
+      "title": "Royal Basmati Rice 4lb",
+      "price": 8.99,
+      "unit": "bag",
+      "inStock": true,
+      "tags": [
+       "rice",
+       "basmati",
+       "indian"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Royal+Basmati+Rice+4lb",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:50.109383+00:00"
+     },
+     {
+      "id": "w-jasmine-rice",
+      "marketplace": "weee",
+      "title": "Three Ladies Jasmine Rice 5lb",
+      "price": 9.99,
+      "unit": "bag",
+      "inStock": true,
+      "tags": [
+       "rice",
+       "jasmine",
+       "three",
+       "ladies"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Three+Ladies+Jasmine+Rice+5lb",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:50.109373+00:00"
+     }
+    ],
+    "recommendedId": null,
+    "reason": null
+   }
+  ],
+  "understanding": {
+   "intent": "add_items",
+   "items": [
+    {
+     "query": "jasmin rice",
+     "qty": 1,
+     "notes": "5 lb"
+    }
+   ],
+   "deadline_hours": null,
+   "reply": "Here is the jasmine rice I found on Weee!."
+  },
+  "checks": {
+   "intent": true,
+   "item_1": true
+  },
+  "score": 1.0,
+  "passed": true,
+  "message": "jasmin rice 5 lb",
+  "tests": "typo"
+ },
+ {
+  "case": "c09",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 1.99,
+  "tokens_in": 652,
+  "tokens_out": 141,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Here are the paneer options available on Weee!"
+   },
+   {
+    "type": "out_of_stock",
+    "request": {
+     "query": "paneer",
+     "qty": 1,
+     "notes": null
+    },
+    "product": {
+     "id": "w-paneer",
+     "marketplace": "weee",
+     "title": "Nanak Paneer 14oz",
+     "price": 6.49,
+     "unit": "pack",
+     "inStock": false,
+     "tags": [
+      "paneer",
+      "cheese",
+      "indian"
+     ],
+     "url": "https://www.sayweee.com/en/search?keyword=Nanak+Paneer+14oz",
+     "source": "snapshot",
+     "checkedAt": "2026-11-12T22:26:53.268955+00:00"
+    },
+    "alternatives": []
+   }
+  ],
+  "understanding": {
+   "intent": "add_items",
+   "items": [
+    {
+     "query": "paneer",
+     "qty": 1,
+     "notes": null
+    }
+   ],
+   "deadline_hours": null,
+   "reply": "Here are the paneer options available on Weee!"
+  },
+  "checks": {
+   "intent": true,
+   "item_1": true
+  },
+  "score": 1.0,
+  "passed": true,
+  "message": "do you have paneer",
+  "tests": "out of stock flagged"
+ },
+ {
+  "case": "c10",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 2.21,
+  "tokens_in": 800,
+  "tokens_out": 261,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "I found some kimchi, scallions, and soy sauce for you."
+   },
+   {
+    "type": "product_choices",
+    "request": {
+     "query": "kimchi",
+     "qty": 1,
+     "notes": null
+    },
+    "products": [
+     {
+      "id": "w-kimchi",
+      "marketplace": "weee",
+      "title": "Jongga Napa Cabbage Kimchi 28oz",
+      "price": 8.49,
+      "unit": "jar",
+      "inStock": true,
+      "tags": [
+       "kimchi",
+       "napa",
+       "cabbage",
+       "jongga"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Jongga+Napa+Cabbage+Kimchi+28oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:55.134137+00:00"
+     }
+    ],
+    "recommendedId": "w-kimchi",
+    "reason": "Exact match for your kimchi request."
+   },
+   {
+    "type": "product_choices",
+    "request": {
+     "query": "scallions",
+     "qty": 1,
+     "notes": null
+    },
+    "products": [
+     {
+      "id": "w-scallion",
+      "marketplace": "weee",
+      "title": "Green Onion Scallions 1 bunch",
+      "price": 0.99,
+      "unit": "bunch",
+      "inStock": true,
+      "tags": [
+       "scallion",
+       "green",
+       "onion"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Green+Onion+Scallions+1+bunch",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:55.137125+00:00"
+     }
+    ],
+    "recommendedId": "w-scallion",
+    "reason": "Fresh green onion bunch in stock."
+   },
+   {
+    "type": "product_choices",
+    "request": {
+     "query": "soy sauce",
+     "qty": 1,
+     "notes": null
+    },
+    "products": [
+     {
+      "id": "w-tofu",
+      "marketplace": "weee",
+      "title": "House Foods Firm Tofu 14oz",
+      "price": 2.29,
+      "unit": "box",
+      "inStock": true,
+      "tags": [
+       "tofu",
+       "firm",
+       "soybean"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=House+Foods+Firm+Tofu+14oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:55.138854+00:00"
+     },
+     {
+      "id": "w-soy-sauce",
+      "marketplace": "weee",
+      "title": "Kikkoman Soy Sauce 15oz",
+      "price": 3.49,
+      "unit": "bottle",
+      "inStock": true,
+      "tags": [
+       "soy",
+       "sauce",
+       "kikkoman"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Kikkoman+Soy+Sauce+15oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:55.138844+00:00"
+     },
+     {
+      "id": "w-chili-crisp",
+      "marketplace": "weee",
+      "title": "Lao Gan Ma Spicy Chili Crisp 7.41oz",
+      "price": 3.69,
+      "unit": "jar",
+      "inStock": true,
+      "tags": [
+       "chili",
+       "crisp",
+       "oil",
+       "lao",
+       "gan",
+       "ma",
+       "spicy",
+       "sauce"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Lao+Gan+Ma+Spicy+Chili+Crisp+7.41oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:26:55.138858+00:00"
+     }
+    ],
+    "recommendedId": "w-soy-sauce",
+    "reason": "Classic Kikkoman soy sauce."
+   }
+  ],
+  "understanding": {
+   "intent": "add_items",
+   "items": [
+    {
+     "query": "kimchi",
+     "qty": 1,
+     "notes": null
+    },
+    {
+     "query": "scallions",
+     "qty": 1,
+     "notes": null
+    },
+    {
+     "query": "soy sauce",
+     "qty": 1,
+     "notes": null
+    }
+   ],
+   "deadline_hours": null,
+   "reply": "I found some kimchi, scallions, and soy sauce for you."
+  },
+  "checks": {
+   "intent": true,
+   "item_1": true,
+   "item_2": true,
+   "item_3": true
+  },
+  "score": 1.0,
+  "passed": true,
+  "message": "kimchi, scallions and soy sauce",
+  "tests": "three items"
+ },
+ {
+  "case": "c11",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 1.22,
+  "tokens_in": 359,
+  "tokens_out": 31,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Our cart is at zero dollars and we need forty-nine dollars total for free shipping."
+   },
+   {
+    "type": "cart_summary",
+    "podId": "the-house"
+   }
+  ],
+  "understanding": {
+   "intent": "cart_status",
+   "items": [],
+   "deadline_hours": null,
+   "reply": "Our cart is at zero dollars and we need forty-nine dollars total for free shipping."
+  },
+  "checks": {
+   "intent": true
+  },
+  "score": 1.0,
+  "passed": true,
+  "message": "how close are we to free shipping?",
+  "tests": "cart question, no search"
+ },
+ {
+  "case": "c12",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 1.16,
+  "tokens_in": 358,
+  "tokens_out": 35,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Sorry, I cannot add alcohol, tobacco, or prescription items to the pod."
+   }
+  ],
+  "understanding": {
+   "intent": "not_allowed",
+   "items": [],
+   "deadline_hours": null,
+   "reply": "Sorry, I cannot add alcohol, tobacco, or prescription items to the pod."
+  },
+  "checks": {
+   "intent": true
+  },
+  "score": 1.0,
+  "passed": true,
+  "message": "add a 6 pack of beer",
+  "tests": "house rule: no alcohol"
+ },
+ {
+  "case": "c13",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 1.04,
+  "tokens_in": 358,
+  "tokens_out": 34,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Hi! I can help you add groceries to our pod order, check our cart, and track deliveries."
+   }
+  ],
+  "understanding": {
+   "intent": "chit_chat",
+   "items": [],
+   "deadline_hours": null,
+   "reply": "Hi! I can help you add groceries to our pod order, check our cart, and track deliveries."
+  },
+  "checks": {
+   "intent": true
+  },
+  "score": 1.0,
+  "passed": true,
+  "message": "hi! what can you do?",
+  "tests": "no tool calls"
+ },
+ {
+  "case": "c14",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 1.86,
+  "tokens_in": 653,
+  "tokens_out": 121,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Here is some cheddar cheese you can add to the pod."
+   },
+   {
+    "type": "product_choices",
+    "request": {
+     "query": "cheddar cheese",
+     "qty": 1,
+     "notes": null
+    },
+    "products": [
+     {
+      "id": "w-paneer",
+      "marketplace": "weee",
+      "title": "Nanak Paneer 14oz",
+      "price": 6.49,
+      "unit": "pack",
+      "inStock": false,
+      "tags": [
+       "paneer",
+       "cheese",
+       "indian"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Nanak+Paneer+14oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:27:00.848163+00:00"
+     }
+    ],
+    "recommendedId": null,
+    "reason": "Cheddar cheese is not available in the current inventory."
+   }
+  ],
+  "understanding": {
+   "intent": "add_items",
+   "items": [
+    {
+     "query": "cheddar cheese",
+     "qty": 1,
+     "notes": null
+    }
+   ],
+   "deadline_hours": 24.0,
+   "reply": "Here is some cheddar cheese you can add to the pod."
+  },
+  "checks": {
+   "intent": false,
+   "item_1": false,
+   "pods": false
+  },
+  "score": 0.0,
+  "passed": false,
+  "message": "I want cheddar cheese by tomorrow",
+  "tests": "deadline: cheapest in stock across stores + pod that delivers in time"
+ },
+ {
+  "case": "c15",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 1.9,
+  "tokens_in": 694,
+  "tokens_out": 232,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Here are some sweet treats to add to our Weee! cart."
+   },
+   {
+    "type": "product_choices",
+    "request": {
+     "query": "mango mochi",
+     "qty": 1,
+     "notes": null
+    },
+    "products": [
+     {
+      "id": "w-mochi",
+      "marketplace": "weee",
+      "title": "Bamboo House Mango Mochi 6pc",
+      "price": 4.99,
+      "unit": "box",
+      "inStock": true,
+      "tags": [
+       "mochi",
+       "mango",
+       "dessert",
+       "sweet"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Bamboo+House+Mango+Mochi+6pc",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:27:02.781648+00:00"
+     }
+    ],
+    "recommendedId": "w-mochi",
+    "reason": "Bamboo House Mango Mochi is the exact match."
+   },
+   {
+    "type": "product_choices",
+    "request": {
+     "query": "hello panda",
+     "qty": 1,
+     "notes": null
+    },
+    "products": [
+     {
+      "id": "w-hello-panda",
+      "marketplace": "weee",
+      "title": "Meiji Hello Panda Chocolate 2.1oz",
+      "price": 1.89,
+      "unit": "box",
+      "inStock": true,
+      "tags": [
+       "hello",
+       "panda",
+       "chocolate",
+       "biscuit",
+       "snack"
+      ],
+      "url": "https://www.sayweee.com/en/search?keyword=Meiji+Hello+Panda+Chocolate+2.1oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:27:02.782875+00:00"
+     }
+    ],
+    "recommendedId": "w-hello-panda",
+    "reason": "Meiji Hello Panda Chocolate is the exact match."
+   }
+  ],
+  "understanding": {
+   "intent": "add_items",
+   "items": [
+    {
+     "query": "mango mochi",
+     "qty": 1,
+     "notes": null
+    },
+    {
+     "query": "hello panda",
+     "qty": 1,
+     "notes": null
+    }
+   ],
+   "deadline_hours": null,
+   "reply": "Here are some sweet treats to add to our Weee! cart."
+  },
+  "checks": {
+   "intent": true,
+   "item_1": true,
+   "item_2": true
+  },
+  "score": 1.0,
+  "passed": true,
+  "message": "mango mochi and hello panda",
+  "tests": "interest pod"
+ },
+ {
+  "case": "c16",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 2.1,
+  "tokens_in": 675,
+  "tokens_out": 153,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Here are some oat milk options you can add to our Amazon Fresh order."
+   },
+   {
+    "type": "out_of_stock",
+    "request": {
+     "query": "oat milk",
+     "qty": 1,
+     "notes": null
+    },
+    "product": {
+     "id": "a-oatmilk",
+     "marketplace": "amazon_fresh",
+     "title": "Oatly Oat Milk Original 64oz",
+     "price": 4.99,
+     "unit": "carton",
+     "inStock": false,
+     "tags": [
+      "oat",
+      "milk",
+      "oatly",
+      "dairy",
+      "free"
+     ],
+     "url": "https://www.amazon.com/s?i=amazonfresh&k=Oatly+Oat+Milk+Original+64oz",
+     "source": "snapshot",
+     "checkedAt": "2026-11-12T22:27:04.682271+00:00"
+    },
+    "alternatives": [
+     {
+      "id": "a-milk",
+      "marketplace": "amazon_fresh",
+      "title": "Horizon Organic Whole Milk Half Gallon",
+      "price": 5.49,
+      "unit": "carton",
+      "inStock": true,
+      "tags": [
+       "milk",
+       "whole",
+       "organic",
+       "horizon"
+      ],
+      "url": "https://www.amazon.com/s?i=amazonfresh&k=Horizon+Organic+Whole+Milk+Half+Gallon",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:27:04.682287+00:00"
+     }
+    ]
+   }
+  ],
+  "understanding": {
+   "intent": "add_items",
+   "items": [
+    {
+     "query": "oat milk",
+     "qty": 1,
+     "notes": null
+    }
+   ],
+   "deadline_hours": null,
+   "reply": "Here are some oat milk options you can add to our Amazon Fresh order."
+  },
+  "checks": {
+   "intent": true,
+   "item_1": true
+  },
+  "score": 1.0,
+  "passed": true,
+  "message": "oat milk",
+  "tests": "out of stock on Amazon"
+ },
+ {
+  "case": "c17",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 35.61,
+  "tokens_in": 357,
+  "tokens_out": 76,
+  "cost_usd": 0.0,
+  "error": "Error calling model 'gemini-3.5-flash-lite' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.\\nPlease retry in 18.677300059s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://aistudio.google.com/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3.5-flash-lite', 'location': 'global'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '18s'}]}}",
+  "blocks": [],
+  "understanding": {},
+  "checks": {
+   "intent": false,
+   "item_1": false,
+   "item_2": false
+  },
+  "score": 0.0,
+  "passed": false,
+  "message": "a dozen eggs and a loaf of bread",
+  "tests": "units in words"
+ },
+ {
+  "case": "c18",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 11.02,
+  "tokens_in": 692,
+  "tokens_out": 234,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Here are some spaghetti and marinara sauce options for your pasta night."
+   },
+   {
+    "type": "product_choices",
+    "request": {
+     "query": "spaghetti",
+     "qty": 1,
+     "notes": "pasta"
+    },
+    "products": [
+     {
+      "id": "a-pasta",
+      "marketplace": "amazon_fresh",
+      "title": "Barilla Spaghetti 16oz",
+      "price": 1.89,
+      "unit": "box",
+      "inStock": true,
+      "tags": [
+       "pasta",
+       "spaghetti",
+       "barilla"
+      ],
+      "url": "https://www.amazon.com/s?i=amazonfresh&k=Barilla+Spaghetti+16oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:27:49.278497+00:00"
+     }
+    ],
+    "recommendedId": null,
+    "reason": null
+   },
+   {
+    "type": "product_choices",
+    "request": {
+     "query": "marinara sauce",
+     "qty": 1,
+     "notes": "pasta night"
+    },
+    "products": [
+     {
+      "id": "a-pasta-sauce",
+      "marketplace": "amazon_fresh",
+      "title": "Rao's Marinara Sauce 24oz",
+      "price": 7.99,
+      "unit": "jar",
+      "inStock": true,
+      "tags": [
+       "pasta",
+       "sauce",
+       "marinara",
+       "raos",
+       "tomato"
+      ],
+      "url": "https://www.amazon.com/s?i=amazonfresh&k=Rao's+Marinara+Sauce+24oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:27:49.279710+00:00"
+     }
+    ],
+    "recommendedId": null,
+    "reason": null
+   }
+  ],
+  "understanding": {
+   "intent": "add_items",
+   "items": [
+    {
+     "query": "spaghetti",
+     "qty": 1,
+     "notes": "pasta"
+    },
+    {
+     "query": "marinara sauce",
+     "qty": 1,
+     "notes": "pasta night"
+    }
+   ],
+   "deadline_hours": null,
+   "reply": "Here are some spaghetti and marinara sauce options for your pasta night."
+  },
+  "checks": {
+   "intent": true,
+   "item_1": true,
+   "item_2": true
+  },
+  "score": 1.0,
+  "passed": true,
+  "message": "spaghetti and marinara for pasta night",
+  "tests": "context phrase"
+ },
+ {
+  "case": "c19",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 1.31,
+  "tokens_in": 356,
+  "tokens_out": 91,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Our Weee! pod closes tomorrow afternoon, so I can help you find another pod if you need eggs by tonight."
+   },
+   {
+    "type": "text",
+    "text": "No open pod can get eggs to you in time."
+   }
+  ],
+  "understanding": {
+   "intent": "find_pod",
+   "items": [
+    {
+     "query": "eggs",
+     "qty": 1,
+     "notes": null
+    }
+   ],
+   "deadline_hours": 12.0,
+   "reply": "Our Weee! pod closes tomorrow afternoon, so I can help you find another pod if you need eggs by tonight."
+  },
+  "checks": {
+   "intent": true,
+   "item_1": true,
+   "pods": true
+  },
+  "score": 1.0,
+  "passed": true,
+  "message": "I need eggs by tonight",
+  "tests": "deadline nobody can meet"
+ },
+ {
+  "case": "c20",
+  "tier": "fast",
+  "model": "gemini-3.5-flash-lite",
+  "seconds": 2.55,
+  "tokens_in": 711,
+  "tokens_out": 117,
+  "cost_usd": 0.0,
+  "error": null,
+  "blocks": [
+   {
+    "type": "text",
+    "text": "Here are some sharp cheddar options for our Amazon Fresh order."
+   },
+   {
+    "type": "product_choices",
+    "request": {
+     "query": "sharp cheddar",
+     "qty": 1,
+     "notes": null
+    },
+    "products": [
+     {
+      "id": "a-cheddar-mild",
+      "marketplace": "amazon_fresh",
+      "title": "Amazon Fresh Mild Cheddar Block 8oz",
+      "price": 2.49,
+      "unit": "block",
+      "inStock": true,
+      "tags": [
+       "cheddar",
+       "cheese",
+       "mild"
+      ],
+      "url": "https://www.amazon.com/s?i=amazonfresh&k=Amazon+Fresh+Mild+Cheddar+Block+8oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:27:55.291885+00:00"
+     },
+     {
+      "id": "a-cheddar-shred",
+      "marketplace": "amazon_fresh",
+      "title": "Kraft Shredded Sharp Cheddar 8oz",
+      "price": 3.29,
+      "unit": "bag",
+      "inStock": true,
+      "tags": [
+       "cheddar",
+       "cheese",
+       "shredded",
+       "kraft"
+      ],
+      "url": "https://www.amazon.com/s?i=amazonfresh&k=Kraft+Shredded+Sharp+Cheddar+8oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:27:55.291872+00:00"
+     },
+     {
+      "id": "a-cheddar-sharp",
+      "marketplace": "amazon_fresh",
+      "title": "Tillamook Sharp Cheddar Block 8oz",
+      "price": 3.79,
+      "unit": "block",
+      "inStock": true,
+      "tags": [
+       "cheddar",
+       "cheese",
+       "sharp",
+       "tillamook"
+      ],
+      "url": "https://www.amazon.com/s?i=amazonfresh&k=Tillamook+Sharp+Cheddar+Block+8oz",
+      "source": "snapshot",
+      "checkedAt": "2026-11-12T22:27:55.291882+00:00"
+     }
+    ],
+    "recommendedId": "a-cheddar-sharp",
+    "reason": "Closest match for sharp cheddar."
+   }
+  ],
+  "understanding": {
+   "intent": "add_items",
+   "items": [
+    {
+     "query": "sharp cheddar",
+     "qty": 1,
+     "notes": null
+    }
+   ],
+   "deadline_hours": null,
+   "reply": "Here are some sharp cheddar options for our Amazon Fresh order."
+  },
+  "checks": {
+   "intent": true,
+   "item_1": true
+  },
+  "score": 1.0,
+  "passed": true,
+  "message": "sharp cheddar",
+  "tests": "variant choice"
+ }
+]

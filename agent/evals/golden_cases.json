@@ -1,0 +1,352 @@
+[
+ {
+  "id": "c01",
+  "pod_id": "the-house",
+  "member_id": "dua",
+  "message": "2 shrimp chips",
+  "expected": {
+   "intent": "add_items",
+   "items": [
+    {
+     "accept_ids": [
+      "w-shrimp-chips"
+     ]
+    }
+   ]
+  },
+  "tests": "simple match, quantity"
+ },
+ {
+  "id": "c02",
+  "pod_id": "the-house",
+  "member_id": "dua",
+  "message": "can I get the spicy shrimp chips",
+  "expected": {
+   "intent": "add_items",
+   "items": [
+    {
+     "out_of_stock": "w-shrimp-chips-spicy"
+    }
+   ]
+  },
+  "tests": "out of stock flagged"
+ },
+ {
+  "id": "c03",
+  "pod_id": "the-house",
+  "member_id": "dua",
+  "message": "buldak noodles",
+  "expected": {
+   "intent": "add_items",
+   "items": [
+    {
+     "accept_ids": [
+      "w-buldak-5",
+      "w-buldak-carbo"
+     ]
+    }
+   ]
+  },
+  "tests": "brand nickname"
+ },
+ {
+  "id": "c04",
+  "pod_id": "the-house",
+  "member_id": "dua",
+  "message": "2 bags of frozen dumplings",
+  "expected": {
+   "intent": "add_items",
+   "items": [
+    {
+     "accept_ids": [
+      "w-dumpling-pork",
+      "w-dumpling-veg"
+     ]
+    }
+   ]
+  },
+  "tests": "vague, must skip out-of-stock chicken"
+ },
+ {
+  "id": "c05",
+  "pod_id": "the-house",
+  "member_id": "dua",
+  "message": "chicken dumplings please",
+  "expected": {
+   "intent": "add_items",
+   "items": [
+    {
+     "out_of_stock": "w-dumpling-chicken"
+    }
+   ]
+  },
+  "tests": "out of stock flagged"
+ },
+ {
+  "id": "c06",
+  "pod_id": "the-house",
+  "member_id": "dua",
+  "message": "tofu and bok choy",
+  "expected": {
+   "intent": "add_items",
+   "items": [
+    {
+     "accept_ids": [
+      "w-tofu"
+     ]
+    },
+    {
+     "accept_ids": [
+      "w-bokchoy"
+     ]
+    }
+   ]
+  },
+  "tests": "two items in one message"
+ },
+ {
+  "id": "c07",
+  "pod_id": "the-house",
+  "member_id": "dua",
+  "message": "3 pocky",
+  "expected": {
+   "intent": "add_items",
+   "items": [
+    {
+     "accept_ids": [
+      "w-pocky",
+      "w-pocky-straw"
+     ]
+    }
+   ]
+  },
+  "tests": "flavor ambiguity"
+ },
+ {
+  "id": "c08",
+  "pod_id": "the-house",
+  "member_id": "dua",
+  "message": "jasmin rice 5 lb",
+  "expected": {
+   "intent": "add_items",
+   "items": [
+    {
+     "accept_ids": [
+      "w-jasmine-rice"
+     ]
+    }
+   ]
+  },
+  "tests": "typo"
+ },
+ {
+  "id": "c09",
+  "pod_id": "the-house",
+  "member_id": "dua",
+  "message": "do you have paneer",
+  "expected": {
+   "intent": "add_items",
+   "items": [
+    {
+     "out_of_stock": "w-paneer"
+    }
+   ]
+  },
+  "tests": "out of stock flagged"
+ },
+ {
+  "id": "c10",
+  "pod_id": "the-house",
+  "member_id": "dua",
+  "message": "kimchi, scallions and soy sauce",
+  "expected": {
+   "intent": "add_items",
+   "items": [
+    {
+     "accept_ids": [
+      "w-kimchi"
+     ]
+    },
+    {
+     "accept_ids": [
+      "w-scallion"
+     ]
+    },
+    {
+     "accept_ids": [
+      "w-soy-sauce"
+     ]
+    }
+   ]
+  },
+  "tests": "three items"
+ },
+ {
+  "id": "c11",
+  "pod_id": "the-house",
+  "member_id": "dua",
+  "message": "how close are we to free shipping?",
+  "expected": {
+   "intent": "cart_status",
+   "items": []
+  },
+  "tests": "cart question, no search"
+ },
+ {
+  "id": "c12",
+  "pod_id": "the-house",
+  "member_id": "dua",
+  "message": "add a 6 pack of beer",
+  "expected": {
+   "intent": "not_allowed",
+   "items": []
+  },
+  "tests": "house rule: no alcohol"
+ },
+ {
+  "id": "c13",
+  "pod_id": "the-house",
+  "member_id": "dua",
+  "message": "hi! what can you do?",
+  "expected": {
+   "intent": "chit_chat",
+   "items": []
+  },
+  "tests": "no tool calls"
+ },
+ {
+  "id": "c14",
+  "pod_id": "the-house",
+  "member_id": "dua",
+  "message": "I want cheddar cheese by tomorrow",
+  "expected": {
+   "intent": "find_pod",
+   "items": [
+    {
+     "accept_ids": [
+      "a-cheddar-mild"
+     ]
+    }
+   ],
+   "pods": [
+    "fresh-basics"
+   ]
+  },
+  "tests": "deadline: cheapest in stock across stores + pod that delivers in time"
+ },
+ {
+  "id": "c15",
+  "pod_id": "asian-snacks",
+  "member_id": "jason",
+  "message": "mango mochi and hello panda",
+  "expected": {
+   "intent": "add_items",
+   "items": [
+    {
+     "accept_ids": [
+      "w-mochi"
+     ]
+    },
+    {
+     "accept_ids": [
+      "w-hello-panda"
+     ]
+    }
+   ]
+  },
+  "tests": "interest pod"
+ },
+ {
+  "id": "c16",
+  "pod_id": "fresh-basics",
+  "member_id": "dua",
+  "message": "oat milk",
+  "expected": {
+   "intent": "add_items",
+   "items": [
+    {
+     "out_of_stock": "a-oatmilk"
+    }
+   ]
+  },
+  "tests": "out of stock on Amazon"
+ },
+ {
+  "id": "c17",
+  "pod_id": "fresh-basics",
+  "member_id": "dua",
+  "message": "a dozen eggs and a loaf of bread",
+  "expected": {
+   "intent": "add_items",
+   "items": [
+    {
+     "accept_ids": [
+      "a-eggs"
+     ]
+    },
+    {
+     "accept_ids": [
+      "a-bread"
+     ]
+    }
+   ]
+  },
+  "tests": "units in words"
+ },
+ {
+  "id": "c18",
+  "pod_id": "fresh-basics",
+  "member_id": "dua",
+  "message": "spaghetti and marinara for pasta night",
+  "expected": {
+   "intent": "add_items",
+   "items": [
+    {
+     "accept_ids": [
+      "a-pasta"
+     ]
+    },
+    {
+     "accept_ids": [
+      "a-pasta-sauce"
+     ]
+    }
+   ]
+  },
+  "tests": "context phrase"
+ },
+ {
+  "id": "c19",
+  "pod_id": "the-house",
+  "member_id": "dua",
+  "message": "I need eggs by tonight",
+  "expected": {
+   "intent": "find_pod",
+   "items": [
+    {
+     "no_pod": true
+    }
+   ],
+   "pods": []
+  },
+  "tests": "deadline nobody can meet"
+ },
+ {
+  "id": "c20",
+  "pod_id": "fresh-basics",
+  "member_id": "dua",
+  "message": "sharp cheddar",
+  "expected": {
+   "intent": "add_items",
+   "items": [
+    {
+     "accept_ids": [
+      "a-cheddar-sharp",
+      "a-cheddar-shred"
+     ]
+    }
+   ]
+  },
+  "tests": "variant choice"
+ }
+]

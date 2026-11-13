@@ -1,0 +1,22 @@
+{
+ "fast": {
+  "model": "gemini-3.5-flash-lite",
+  "quality_mean_score": 0.95,
+  "passed": "9/10",
+  "latency_median_s": 3.5700000000000003,
+  "latency_p90_s": 11.75,
+  "cost_per_100_runs_usd": 0.062,
+  "avg_tokens_in": 724,
+  "avg_tokens_out": 161
+ },
+ "strong": {
+  "model": "gemini-3-flash-preview",
+  "quality_mean_score": 1.0,
+  "passed": "10/10",
+  "latency_median_s": 5.725,
+  "latency_p90_s": 14.62,
+  "cost_per_100_runs_usd": 0.49,
+  "avg_tokens_in": 724,
+  "avg_tokens_out": 1514
+ }
+}

@@ -1,0 +1,9 @@
+{
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "agent/huddlecart/**",
+      "excludeFiles": "{node_modules,.next,agent/.venv,agent/evals}/**",
+      "maxDuration": 60
+    }
+  }
+}

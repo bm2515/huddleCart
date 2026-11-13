@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  --color-forest: #1f5c4a;
+  --color-forest-deep: #174636;
+  --color-lime: #d9f07a;
+  --color-cream: #f6f3ec;
+  --color-sage: #e4ede6;
+  --color-ink: #1d2420;
+  --color-clay: #c2562e;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: #313338;
+  color: #dbdee1;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
