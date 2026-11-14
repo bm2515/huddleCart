@@ -12,8 +12,9 @@ Rules live in `policy.md`. Scenarios, expected outputs and message rubrics are i
 From `agent/`. The model steps need `GOOGLE_API_KEY`, either in the environment or as a line in `agent/.env`.
 
 ```
-python -m pytest tests/test_orders.py                 # engine vs all 36 scenarios with a scripted parser (no API key)
+python -m pytest tests/test_orders.py                 # engine vs all 36 scenarios + 15 hard ones with a scripted parser (no API key)
 python -m evals.new_evals.run golden --runs 3         # 20 golden cases with the real model, 3 runs each
+python -m evals.new_evals.run hard --runs 3           # 15 harder scenarios (hard.yaml), to find failure patterns
 python -m evals.new_evals.run judge                   # cross-model judge on 10
 python -m evals.new_evals.run team-sheet Astawa Ali Bilal Duaa Quyen
 python -m evals.new_evals.run team                    # after the sheet is filled in
@@ -78,10 +79,23 @@ For each case it gets the policy rules the scenario tests, the setup, the expect
 
 ## 3. Top three failure patterns
 
-Pending the golden run. This section will be written from what actually fails.
+The golden set had no failures (60/60 runs), so it can't show where the AI breaks. `hard.yaml` adds 15 harder scenarios aimed at what the AI does: quantity words, slang, mixed Urdu/English, negation, near-miss products, halal variants the request doesn't name, replies that don't choose, and a subtler injection. Each has a scripted correct reading, and `tests/test_orders.py` shows the engine passes all 15 with it, so every failure below is the model misreading.
+
+Run on 2026-11-13 with `gemini-3.5-flash-lite`, 3 runs each (`python -m evals.new_evals.run hard`): **12/15 cases passed every run (critical 2/2), mean score 0.91.** Raw output: `results/hard.json`. All three failures are in reading requests. Reading replies and both critical cases (injection, halal) passed every run.
+
+| # | Pattern | Case | Runs failed | What the model did | Cost to the household |
+|---|---|---|---|---|---|
+| 1 | **The number is copied without converting units.** The request counts in one unit (lb) and the product is sold in another (4 lb bags). | hard-weight-vs-bag-115, "2 lbs basmati rice" | 3/3 | Ordered 2 bags (8 lb) instead of 1 bag, the smallest pack that covers 2 lb (R2.3) | Charged $17.98 instead of $8.99, with no warning |
+| 2 | **It asks when the wording already decides.** A count of single items ("6 bananas") points to the per-each product, but the model returned both banana products. | hard-each-vs-lb-110, "6 bananas" | 3/3 | Listed Banana (each) and Bananas (per lb), so code asked a question; with no reply, the item was dropped | Gets no bananas, plus an extra question |
+| 3 | **A near miss becomes a silent substitute.** The product asked for isn't carried, and the model maps it to the closest product. | hard-organic-not-carried-109, "organic whole milk" | 1/3 | Matched regular whole milk instead of reporting it as not carried (R3.6, R2.4) | Gets a product they didn't ask for, though substitutions are off, and isn't told |
+
+Pattern 3 is the most serious even though it is the rarest. Code can enforce substitution rules only for items it knows are out of stock or not carried. When the model reads "organic whole milk" as "whole milk", code sees a clean match, so the no-substitutions setting and the R6.1 notification never apply. Patterns 1 and 2 are visible in the household's cart; pattern 3 is not.
+
+Possible fixes, not yet made: add a worked example of unit conversion to the reading prompt (1); let code pick the per-each product when the request counts single items (2); have code check that every distinguishing word in the request ("organic", a brand) appears in the matched product's name, and treat it as not carried otherwise (3).
 
 ## Known limits
 
 - A dietary label (halal) only counts in categories where some product carries it, so eggs don't need a halal tag. Vegetarian would need a better rule, and no scenario tests it.
 - Households with no substitution setting are treated as **not** allowing substitutes.
 - The 16 non-golden scenarios run only in the scripted test (`tests/test_orders.py`), not against the model.
+- The hard set is checked by code only. The judge hasn't been run on it, and the 100% judge agreement above comes from cases that all passed.

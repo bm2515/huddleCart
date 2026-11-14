@@ -1,6 +1,8 @@
 """Policy v0.2 eval pack: 20 golden scenarios from evals.yaml, run through huddlecart.orders.
 
   python -m evals.new_evals.run golden [--runs 3]       # run the 20 golden scenarios, code-checked
+  python -m evals.new_evals.run hard [--runs 3]         # the 15 harder scenarios in hard.yaml, same checks
+  python -m evals.new_evals.run judge-hard              # Gemma judges the 15 hard cases, failures included
   python -m evals.new_evals.run judge                   # Gemma judges 10 of them; agreement with code checks
   python -m evals.new_evals.run team-sheet NAME ...     # CSV for teammates to score each case 0 / 0.5 / 1
   python -m evals.new_evals.run team                    # read the filled CSV, write the team table into EVALS.md
@@ -30,6 +32,8 @@ if ENV_FILE.exists():
 
 SPEC = yaml.safe_load((HERE / "evals.yaml").read_text())
 SCENARIOS = {s["id"]: s for s in SPEC["scenarios"]}
+HARD_SPEC = yaml.safe_load((HERE / "hard.yaml").read_text())  # harder inputs, to find where the AI breaks
+HARD = {s["id"]: s for s in HARD_SPEC["scenarios"]}
 POLICY = (HERE / "policy.md").read_text()
 
 # All 13 critical scenarios + 7 major ones that lean on the AI (matching, asking, holding, wording).
@@ -153,11 +157,11 @@ def score(expected: dict, out: dict) -> dict:
 
 # ---------- running ----------
 
-def run_one(scenario: dict, brain) -> dict:
+def run_one(scenario: dict, brain, defaults: dict | None = None) -> dict:
     from huddlecart.orders import run_scenario
     started = time.perf_counter()
     try:
-        out, error = run_scenario(scenario["setup"], SPEC["defaults"], brain), None
+        out, error = run_scenario(scenario["setup"], defaults or SPEC["defaults"], brain), None
     except Exception as exc:  # a provider error or crash is a failed run, not a crashed eval
         out, error = None, f"{type(exc).__name__}: {exc}"[:300]
     seconds = round(time.perf_counter() - started, 2)
@@ -165,14 +169,13 @@ def run_one(scenario: dict, brain) -> dict:
     return {"seconds": seconds, "error": error, "output": out, **graded}
 
 
-def golden() -> None:
+def run_cases(name: str, scenarios: dict, defaults: dict) -> None:
     from huddlecart.order_ai import LLMBrain
     runs = int(sys.argv[sys.argv.index("--runs") + 1]) if "--runs" in sys.argv else 3
     brain = LLMBrain()
     rows = []
-    for sid in GOLDEN:
-        s = SCENARIOS[sid]
-        attempts = [run_one(s, brain) for _ in range(runs)]
+    for sid, s in scenarios.items():
+        attempts = [run_one(s, brain, defaults) for _ in range(runs)]
         passes = sum(a["passed"] for a in attempts)
         rows.append({"id": sid, "title": s["title"], "severity": s["severity"], "policy": s["policy"],
                      "model": brain.model_name, "runs": attempts, "passes": passes,
@@ -183,10 +186,18 @@ def golden() -> None:
             failed = [k for k, v in a["checks"].items() if not v]
             if failed or a["error"]:
                 print(f"        {a['error'] or ', '.join(failed)}")
-    save("golden", rows)
+    save(name, rows)
     crit = [r for r in rows if r["severity"] == "critical"]
     print(f"\nall runs passed: {sum(r['passes'] == runs for r in rows)}/{len(rows)} cases; "
           f"critical {sum(r['passes'] == runs for r in crit)}/{len(crit)}; mean score {statistics.mean(r['score'] for r in rows):.2f}")
+
+
+def golden() -> None:
+    run_cases("golden", {sid: SCENARIOS[sid] for sid in GOLDEN}, SPEC["defaults"])
+
+
+def hard() -> None:
+    run_cases("hard", HARD, HARD_SPEC["defaults"])
 
 
 # ---------- cross-model judge ----------
@@ -209,10 +220,10 @@ def summary(out: dict | None) -> str:
     return "\n".join(parts)
 
 
-def judge(row: dict) -> dict:
+def judge(row: dict, scenario: dict | None = None, run: int = 0) -> dict:
     from langchain_core.messages import HumanMessage
     from huddlecart.agent import chat_model
-    s = SCENARIOS[row["id"]]
+    s = scenario or SCENARIOS[row["id"]]
     rubrics = {name: r for name, r in SPEC["rubrics"].items()}
     prompt = f"""You grade a grocery ordering system that combines a building's orders. Code made the decisions; an AI
 wrote the messages. Grade two things separately.
@@ -231,13 +242,20 @@ Expected: {json.dumps(s['expected'], default=str)}
 Message rubrics: {json.dumps(rubrics)}
 
 What the system did:
-{summary(row['runs'][0]['output'])}
+{summary(row['runs'][run]['output'])}
 
 Answer in exactly three lines:
 DECISIONS: PASS or FAIL
 MESSAGES: PASS, FAIL or N/A
 REASON: one short sentence"""
-    answer = chat_model(JUDGE_MODEL).invoke([HumanMessage(prompt)]).text.strip()
+    for attempt in range(4):  # a provider error (500, rate limit) is retried, not counted as a verdict
+        try:
+            answer = chat_model(JUDGE_MODEL).invoke([HumanMessage(prompt)]).text.strip()
+            break
+        except Exception:
+            if attempt == 3:
+                raise
+            time.sleep(5 * 2 ** attempt)
     found = {k: (m.group(1).upper() if (m := re.search(rf"{k}:\s*\**\s*(PASS|FAIL|N/A)", answer, re.I)) else "?")
              for k in ("DECISIONS", "MESSAGES")}
     reason = m.group(1).strip() if (m := re.search(r"REASON:\s*(.+)", answer, re.I)) else answer.splitlines()[-1]
@@ -260,6 +278,32 @@ def judge_ten() -> None:
     print(f"\njudge {JUDGE_MODEL} agrees with code checks on {agree}/{len(out)} = {agree / len(out):.0%}")
 
 
+def pick_run(row: dict) -> int:
+    """The first failing run if any run failed, else run 1: so the judge and the team see the failures."""
+    return next((i for i, a in enumerate(row["runs"]) if not a["passed"]), 0)
+
+
+def judge_hard() -> None:
+    """Every case in the golden set passed, so the 10/10 agreement only shows the judge lets good runs through.
+    The hard set has failures, so here agreement also shows whether the judge catches bad ones."""
+    out = []
+    for row in load("hard"):
+        run = pick_run(row)
+        verdict = judge(row, HARD[row["id"]], run)
+        code_pass = row["runs"][run]["passed"]
+        out.append({"id": row["id"], "run": run + 1, "code_passed": code_pass, "judge_decisions_passed": verdict["decisions"] == "PASS",
+                    "judge_messages": verdict["messages"], "reason": verdict["reason"], "raw": verdict["raw"]})
+        print(f"{row['id']:32} run {run + 1} code={'pass' if code_pass else 'fail'} judge={verdict['decisions'].lower()} "
+              f"messages={verdict['messages'].lower()}  {verdict['reason']}")
+    save("judge_hard", out)
+    agree = sum(r["code_passed"] == r["judge_decisions_passed"] for r in out)
+    fails = [r for r in out if not r["code_passed"]]
+    passes = [r for r in out if r["code_passed"]]
+    print(f"\njudge {JUDGE_MODEL} agrees with code checks on {agree}/{len(out)} = {agree / len(out):.0%}; "
+          f"caught {sum(not r['judge_decisions_passed'] for r in fails)}/{len(fails)} failures, "
+          f"passed {sum(r['judge_decisions_passed'] for r in passes)}/{len(passes)} correct runs")
+
+
 # ---------- team scores ----------
 
 SHEET = RESULTS / "team_scores.csv"
@@ -278,6 +322,11 @@ def team_sheet() -> None:
             s, row = SCENARIOS[sid], rows[sid]
             expected = yaml.safe_dump({k: v for k, v in s["expected"].items() if k != "judge"}, sort_keys=False, width=200).strip()
             w.writerow([sid, s["title"], s["severity"], expected, summary(row["runs"][0]["output"]), row["runs"][0]["score"]] + [""] * len(names))
+        for row in load("hard") if (RESULTS / "hard.json").exists() else []:  # hard set: the run the judge saw
+            s, run = HARD[row["id"]], pick_run(row)
+            expected = yaml.safe_dump({k: v for k, v in s["expected"].items() if k != "judge"}, sort_keys=False, width=200).strip()
+            shown = f"(hard set, run {run + 1} of {len(row['runs'])})\n{summary(row['runs'][run]['output'])}"
+            w.writerow([row["id"], s["title"], s["severity"], expected, shown, row["runs"][run]["score"]] + [""] * len(names))
     print(f"wrote {SHEET} with columns for {names}")
 
 
@@ -315,4 +364,4 @@ def load(name: str):
 
 
 if __name__ == "__main__":
-    {"golden": golden, "judge": judge_ten, "team-sheet": team_sheet, "team": team}[sys.argv[1]]()
+    {"golden": golden, "hard": hard, "judge": judge_ten, "judge-hard": judge_hard, "team-sheet": team_sheet, "team": team}[sys.argv[1]]()

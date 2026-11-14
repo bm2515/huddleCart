@@ -43,3 +43,32 @@ def test_fooled_brain_still_cannot_order_alcohol_or_touch_other_carts():  # R8.2
     assert out["line_items"]["ben"] == [{"sku": "eggs-12", "qty": 1}]
     assert "red-wine-750ml" not in {l["sku"] for l in out["store_order"]}
     assert out["payment_status"] == "pending"
+
+
+# ---------- hard set: the engine with a scripted correct reading of every request and reply ----------
+
+from evals.new_evals.run import HARD, HARD_SPEC  # noqa: E402
+
+
+class ScriptedBrain(RuleBrain):
+    """Reads exactly what `scripted` in hard.yaml says is the right reading."""
+
+    def __init__(self, script):
+        self.script = script
+
+    def read_request(self, text, catalog):
+        return [dict(r) for r in self.script["reads"][text]]
+
+    def read_choice(self, reply, options):
+        return self.script["choice"][reply]
+
+    def read_yes(self, reply):
+        return self.script["confirms"][reply]
+
+
+@pytest.mark.parametrize("sid", list(HARD))
+def test_hard_scenario_with_correct_reading(sid):
+    scenario = HARD[sid]
+    out = run_scenario(scenario["setup"], HARD_SPEC["defaults"], ScriptedBrain(scenario["scripted"]))
+    graded = score(scenario["expected"], out)
+    assert graded["passed"], [k for k, ok in graded["checks"].items() if not ok]
