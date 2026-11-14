@@ -52,6 +52,7 @@ JUDGED = [
     "understand-dietary-match-027",
 ]
 JUDGE_MODEL = os.getenv("HUDDLECART_JUDGE_MODEL", "gemma-4-31b-it")
+JUDGE_TIMEOUT = 120  # seconds per judge call
 
 
 # ---------- code checks ----------
@@ -220,9 +221,14 @@ def summary(out: dict | None) -> str:
     return "\n".join(parts)
 
 
+def judge_model():
+    """A call with no answer would otherwise wait forever; time out after 2 minutes and let judge() retry."""
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    return ChatGoogleGenerativeAI(model=JUDGE_MODEL, temperature=0, timeout=JUDGE_TIMEOUT, max_retries=0)
+
+
 def judge(row: dict, scenario: dict | None = None, run: int = 0) -> dict:
     from langchain_core.messages import HumanMessage
-    from huddlecart.agent import chat_model
     s = scenario or SCENARIOS[row["id"]]
     rubrics = {name: r for name, r in SPEC["rubrics"].items()}
     prompt = f"""You grade a grocery ordering system that combines a building's orders. Code made the decisions; an AI
@@ -250,7 +256,7 @@ MESSAGES: PASS, FAIL or N/A
 REASON: one short sentence"""
     for attempt in range(4):  # a provider error (500, rate limit) is retried, not counted as a verdict
         try:
-            answer = chat_model(JUDGE_MODEL).invoke([HumanMessage(prompt)]).text.strip()
+            answer = judge_model().invoke([HumanMessage(prompt)]).text.strip()
             break
         except Exception:
             if attempt == 3:
@@ -286,16 +292,19 @@ def pick_run(row: dict) -> int:
 def judge_hard() -> None:
     """Every case in the golden set passed, so the 10/10 agreement only shows the judge lets good runs through.
     The hard set has failures, so here agreement also shows whether the judge catches bad ones."""
-    out = []
+    out = load("judge_hard") if (RESULTS / "judge_hard.json").exists() and "--fresh" not in sys.argv else []
+    done = {r["id"] for r in out}  # resume: cases already judged are kept, so a crash or hang loses nothing
     for row in load("hard"):
+        if row["id"] in done:
+            continue
         run = pick_run(row)
         verdict = judge(row, HARD[row["id"]], run)
         code_pass = row["runs"][run]["passed"]
         out.append({"id": row["id"], "run": run + 1, "code_passed": code_pass, "judge_decisions_passed": verdict["decisions"] == "PASS",
                     "judge_messages": verdict["messages"], "reason": verdict["reason"], "raw": verdict["raw"]})
+        save("judge_hard", out)
         print(f"{row['id']:32} run {run + 1} code={'pass' if code_pass else 'fail'} judge={verdict['decisions'].lower()} "
-              f"messages={verdict['messages'].lower()}  {verdict['reason']}")
-    save("judge_hard", out)
+              f"messages={verdict['messages'].lower()}  {verdict['reason']}", flush=True)
     agree = sum(r["code_passed"] == r["judge_decisions_passed"] for r in out)
     fails = [r for r in out if not r["code_passed"]]
     passes = [r for r in out if r["code_passed"]]
